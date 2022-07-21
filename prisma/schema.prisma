@@ -1,0 +1,74 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  content     String
+  description String?
+  comments    Comment[]
+  festival    Festival? @relation(fields: [festival_id], references: [id])
+  festival_id Int
+  user        User? @relation(fields: [user_id], references: [id])
+  user_id     Int
+  likes       PostLiked[]
+}
+
+model Comment {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  content     String
+  post        Post? @relation(fields: [post_id], references: [id])
+  post_id     Int
+  user        User? @relation(fields: [user_id], references: [id])
+  user_id     Int
+}
+
+model Festival {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  title       String
+  year        DateTime?
+  location    String
+  description String?
+  posts       Post[]
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  firstName   String
+  lastName    String
+  certified   Boolean @default(false)
+  email       String
+  avatar      String?
+  password    String
+  description String?
+  posts       Post[]
+  comments    Comment[]
+  likes       PostLiked[]
+}
+
+model PostLiked{
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  like        Boolean @default(false)
+  post        Post? @relation(fields: [post_id], references: [id])
+  post_id     Int
+  user        User? @relation(fields: [user_id], references: [id])
+  user_id     Int
+} 
