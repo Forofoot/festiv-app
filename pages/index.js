@@ -1,7 +1,16 @@
 import Head from 'next/head'
 import { PrismaClient } from '@prisma/client'
+import { useState, useEffect } from 'react'
+import { useCookies } from 'react-cookie'
 
 export default function Home({data}) {
+
+  const [currentUser, setCurrentUser] = useState(null)
+  const [cookies] = useCookies(['user'])
+
+  useEffect(() => {
+    setCurrentUser(cookies.user)
+  }, [cookies.user])
   return (
     <div>
       <Head>
@@ -11,6 +20,7 @@ export default function Home({data}) {
       </Head>
 
       <h1>Festiv-app</h1>
+      <h2>Bonjour {currentUser?.firstName}</h2>
       <p>Nom des festivaliers</p>
       {data.map((elt, i) =>(
         <div key={i}>

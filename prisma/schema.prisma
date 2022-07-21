@@ -53,7 +53,7 @@ model User {
   firstName   String
   lastName    String
   certified   Boolean @default(false)
-  email       String
+  email       String  @unique
   avatar      String?
   password    String
   description String?

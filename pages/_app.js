@@ -1,11 +1,13 @@
-
+import { CookiesProvider } from "react-cookie";
 import Layout from '../components/Layout'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <CookiesProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </CookiesProvider>
   )
 }
 
