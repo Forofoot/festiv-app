@@ -10,9 +10,9 @@ export default async function handler(
         //Only POST mothod is accepted
         if (req.method === 'POST') {
             //Getting email and password from body
-            const { firstName, lastName, email, password } = req.body
+            const { firstName, lastName, email, password, pseudo } = req.body
             //Validate
-            if (!firstName || !lastName || !email || !password) {
+            if (!firstName || !lastName || !email || !password || !pseudo) {
                 res.status(422).json({ message: 'Données invalides' })
                 return
             }
@@ -32,12 +32,16 @@ export default async function handler(
                 data:{
                     firstName,
                     lastName,
+                    pseudo,
                     email,
                     password: await hash(password, 12),
                 }
             })
             //Send success response
-            res.status(201).json(newUser);
+            res.status(201).json({
+                    pseudo: newUser.pseudo
+                }
+            );
             
             await prisma.$disconnect()
             //Close DB connection

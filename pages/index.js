@@ -20,7 +20,7 @@ export default function Home({data}) {
       </Head>
 
       <h1>Festiv-app</h1>
-      <h2>Bonjour {currentUser?.firstName}</h2>
+      <h2>Bonjour {currentUser?.pseudo}</h2>
       <p>Nom des festivaliers</p>
       {data.map((elt, i) =>(
         <div key={i}>
@@ -34,9 +34,6 @@ export default function Home({data}) {
 export async function getServerSideProps(){
   const prisma = new PrismaClient()
   const data = await prisma.user.findMany()
-
-
-  console.log(data)
   return{
     props:{
       data

@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 export default function Signup () {
     const [inputedUser, setInputedUser] = useState({
         email: "",
+        pseudo: "",
         firstName: "",
         lastName: "",
         password: ""
@@ -19,7 +20,7 @@ export default function Signup () {
         e.preventDefault()
         try{
             toast.loading('Inscription en cours...')
-            if (!inputedUser.email || !inputedUser.email.includes('@') || !inputedUser.password || !inputedUser.firstName || !inputedUser.lastName) {
+            if (!inputedUser.email || !inputedUser.email.includes('@') || !inputedUser.password || !inputedUser.firstName || !inputedUser.lastName || !inputedUser.pseudo) {
                 toast.remove()
                 toast.error('Informations incorrectes')
             }else{
@@ -31,6 +32,7 @@ export default function Signup () {
                     },
                     body: JSON.stringify({
                         email: inputedUser.email,
+                        pseudo: inputedUser.pseudo,
                         firstName: inputedUser.firstName,
                         lastName: inputedUser.lastName,
                         password: inputedUser.password,
@@ -66,6 +68,8 @@ export default function Signup () {
             <form method='POST' onSubmit={handleCreateUser}>
                 <label>Email</label>
                 <input type="text" value={inputedUser.email || ""} placeholder='email' onChange={(e) => setInputedUser({ ...inputedUser, email:e.target.value })}/>
+                <label>Pseudo</label>
+                <input type="text" value={inputedUser.pseudo || ""} placeholder='pseudo' onChange={(e) => setInputedUser({ ...inputedUser, pseudo:e.target.value })}/>
                 <label>Prénom</label>
                 <input type="text" value={inputedUser.firstName || ""} placeholder='Prénom' onChange={(e) => setInputedUser({ ...inputedUser, firstName:e.target.value })}/>
                 <label>Nom</label>
