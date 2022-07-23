@@ -3,6 +3,40 @@ import Link from "next/link"
 import { useCookies } from "react-cookie"
 import { useState, useEffect } from "react"
 import toast, { Toaster } from 'react-hot-toast';
+import styled from "styled-components";
+import {device} from "../styles/device.css"
+
+const HeaderStyle = styled.header`
+  padding:20px 50px;
+  background-color: #fff;
+  nav{
+    display: flex;  
+    align-items: center;
+    justify-content: space-between;
+  }
+  .navActions{
+    display: flex;
+    align-items: center;
+    gap: 150px;
+    a{
+      color: var(--primary);
+      font-weight: bold;
+      will-change: color;
+      transition: color .2s ease-out;
+      &:hover{
+        color: var(--secondary);
+      }
+      &:first-child{
+        margin-right:62px;
+      }
+    }
+  }
+  .accountActions{
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+`
 
 export default function Navbar() {
 
@@ -20,33 +54,49 @@ export default function Navbar() {
     toast.success('Déconnecté')
   }
   return (
-    <header>
+    <HeaderStyle>
       <Toaster/>
       <nav>
-        <ul>
-          <li>
-            <Link href='/auth/signup'>
-              <a>
-                S&apos;inscrire
-              </a>
-            </Link>
-          </li>
-          <li>
-            <Link href='/auth/signin'>
-              <a>
-                Se connecter
-              </a>
-            </Link>
-          </li>
+        <div className="navActions">
+          <h1>
+            Mon App
+          </h1>
+          <ul>
+            <li>
+              <Link href='/auth/signup'>
+                <a>
+                  S&apos;inscrire
+                </a>
+              </Link>
+            </li>
+            <li>
+              <button onClick={(e) => logout(e)}>
+                Se déconnecter
+              </button>
+            </li>
+          </ul>
+        </div>
+        {currentUser ? (
+          <ul className="accountActions">
+            <li>Thumbs</li>
+            <li>Notif</li>
+            <li>
+              <Link href="#">
+                <a>
+                  Account
+                </a>
+              </Link>
+            </li>
         </ul>
-        <ul>
-          <li>
-            <button onClick={(e) => logout(e)}>
-              Se déconnecter
-            </button>
-          </li>
-        </ul>
+        ) : (
+          <Link href='/auth/signin'>
+            <a>
+              Se connecter
+            </a>
+          </Link>
+        )}
+        
       </nav>
-    </header>
+    </HeaderStyle>
   )
 }

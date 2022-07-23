@@ -62,7 +62,7 @@ export default function Signin () {
                 <label>Email</label>
                 <input type="text" value={inputedUser.email || ""} placeholder='email' onChange={(e) => setInputedUser({ ...inputedUser, email:e.target.value })}/>
                 <input type="password"  value={inputedUser.password || ""} placeholder='Mot de passe' minLength={8} onChange={(e) => setInputedUser({ ...inputedUser, password:e.target.value })}/>
-                <button type='submit' className="btnPrimary btnMore hoverEffect">S&apos;inscrire</button>
+                <button type='submit' className="btnPrimary btnMore hoverEffect">Se connecter</button>
             </form>
         </>
     )
