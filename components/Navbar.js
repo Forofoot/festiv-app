@@ -4,7 +4,7 @@ import { useCookies } from "react-cookie"
 import { useState, useEffect } from "react"
 import toast, { Toaster } from 'react-hot-toast';
 import styled from "styled-components";
-
+import {device} from '../styles/device.css'
 const HeaderStyle = styled.header`
   padding:20px 50px;
   background-color: #fff;
@@ -16,7 +16,10 @@ const HeaderStyle = styled.header`
   .navActions{
     display: flex;
     align-items: center;
-    gap: 150px;
+    gap: 15px;
+    @media ${device.mobile}{
+      gap: 150px;
+    }
     a{
       color: var(--primary);
       font-weight: bold;

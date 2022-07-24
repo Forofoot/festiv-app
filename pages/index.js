@@ -25,7 +25,7 @@ export default function Home({data}) {
       <p>Nom des festivaliers</p>
       {data.map((elt, i) =>(
         <div key={i}>
-          <p>{elt.firstName}</p>
+          <p>{elt.pseudo}</p>
         </div>
       ))}
     </div>
