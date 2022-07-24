@@ -1,7 +1,6 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components';
 import { GA_TRACKING_ID } from '../lib/gtatg'
-import { GTM_ID } from '../lib/gtm';
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -76,7 +75,7 @@ export default class MyDocument extends Document {
 
         <body>
           <script 
-            async src={`https://www.googletagmanager.com/ns.html?id=GTM-TJLZS9J `}
+            async src="https://www.googletagmanager.com/ns.html?id=GTM-TJLZS9J"
           />
           <Main />
 
