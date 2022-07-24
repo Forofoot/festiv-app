@@ -60,9 +60,9 @@ export default async function handler(
                                 avatar: userModified.avatar
                             })
                         }else{
-                            const deleteOldImage = await cloudinary.uploader.destroy(
+                            /*const deleteOldImage = await cloudinary.uploader.destroy(
                                 currentAvatar
-                            );
+                            );*/
                             
                             const imageData = await uploadAvatar(file.path);
                             const userModified = await prisma.user.update({
@@ -101,9 +101,9 @@ export default async function handler(
                                 avatar: userModified.avatar
                             })
                         }else{
-                            const deleteOldImage = await cloudinary.uploader.destroy(
+                            /*const deleteOldImage = await cloudinary.uploader.destroy(
                                 currentAvatar
-                            );
+                            );*/
 
                             const imageData = await uploadAvatar(file.path);
 
