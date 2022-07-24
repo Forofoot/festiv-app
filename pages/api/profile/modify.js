@@ -115,7 +115,8 @@ export default async function handler(
                                 })
                                 
                                 res.status(200).json({
-                                    pseudo: userModified.pseudo
+                                    pseudo: userModified.pseudo,
+                                    avatar: userModified.avatar
                                 })
                             }else{
                                 const deleteOldImage = await cloudinary.uploader.destroy(
