@@ -28,7 +28,7 @@ export default async function handler(
                     pseudo
                 }
             })
-            
+
     
             //Hash password
             if(userExist || userPseudoExist){
@@ -50,7 +50,7 @@ export default async function handler(
                 }
             );
             
-            await prisma.$disconnect()
+            
             //Close DB connection
         } else {
             //Response for other than POST method

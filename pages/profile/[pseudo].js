@@ -177,7 +177,7 @@ export const getServerSideProps = async ({query}) => {
             }
         })
 
-        await prisma.$disconnect()
+        
         
         return{
             props:{
