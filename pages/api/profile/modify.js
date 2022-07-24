@@ -118,7 +118,6 @@ export default async function handler(
                                     password: await hash(password, 12)
                                 }
                             })
-                            
                             res.status(200).json({
                                 pseudo: userModified.pseudo,
                                 avatar: userModified.avatar
