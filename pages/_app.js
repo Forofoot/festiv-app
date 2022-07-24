@@ -3,6 +3,8 @@ import Layout from '../components/Layout'
 import GlobalCSS from '../styles/global.css'
 import {useEffect} from 'react'
 import { useRouter } from 'next/router'
+import { GTM_ID } from '../lib/gtm'
+import * as gtag from '../lib/gtag'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
