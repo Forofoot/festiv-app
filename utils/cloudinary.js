@@ -10,7 +10,7 @@ export function uploadAvatar(imageUploaded) {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(
       imageUploaded,
-      { crop: "fill", folder: 'avatar', width: 368, height: 368 },
+      { crop: "fill", folder: 'avatar'},
       (err, res) => {
         if (err) reject(err);
         resolve(res);

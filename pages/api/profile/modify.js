@@ -75,7 +75,6 @@ export default async function handler(
                                 );
                                 
                                 const imageData = await uploadAvatar(file.path);
-                                console.log(imageData.public_id)
                                 const userModified = await prisma.user.update({
                                     where:{
                                         pseudo: currentUserPseudo
@@ -124,8 +123,7 @@ export default async function handler(
                                 );
 
                                 const imageData = await uploadAvatar(file.path);
-                                
-                                console.log(currentAvatar)
+
                                 const userModified = await prisma.user.update({
                                     where:{
                                         pseudo: currentUserPseudo
