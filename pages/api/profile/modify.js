@@ -134,5 +134,6 @@ export default async function handler(
         }
     }catch(e){
         console.log(e)
+        res.status(500).json({message: 'Erreur lors du post'})
     }
 }
