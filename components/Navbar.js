@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie"
 import { useState, useEffect } from "react"
 import toast, { Toaster } from 'react-hot-toast';
 import styled from "styled-components";
-import {device} from "../styles/device.css"
 
 const HeaderStyle = styled.header`
   padding:20px 50px;
@@ -81,7 +80,7 @@ export default function Navbar() {
             <li>Thumbs</li>
             <li>Notif</li>
             <li>
-              <Link href="#">
+              <Link href={`/profile/${currentUser?.pseudo}`}>
                 <a>
                   Account
                 </a>
