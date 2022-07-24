@@ -24,7 +24,8 @@ export default async function handler(
                 res.status(500).json('Mot de passe ou nom d\'utilisateur incorrect')
             }else{
                 res.status(200).json({
-                    pseudo: resultUser.pseudo
+                    pseudo: resultUser.pseudo,
+                    avatar: resultUser.avatar
                 })
                 await prisma.$disconnect()
             }

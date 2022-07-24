@@ -6,39 +6,39 @@ generator client {
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   content     String
   description String?
   comments    Comment[]
-  festival    Festival? @relation(fields: [festival_id], references: [id])
+  festival    Festival?   @relation(fields: [festival_id], references: [id])
   festival_id Int
-  user        User? @relation(fields: [user_id], references: [id])
+  user        User?       @relation(fields: [user_id], references: [id])
   user_id     Int
   likes       PostLiked[]
 }
 
 model Comment {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  content     String
-  post        Post? @relation(fields: [post_id], references: [id])
-  post_id     Int
-  user        User? @relation(fields: [user_id], references: [id])
-  user_id     Int
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+  post      Post?    @relation(fields: [post_id], references: [id])
+  post_id   Int
+  user      User?    @relation(fields: [user_id], references: [id])
+  user_id   Int
 }
 
 model Festival {
   id          Int       @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   title       String
   year        DateTime?
   location    String
@@ -47,15 +47,16 @@ model Festival {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   firstName   String
   lastName    String
-  pseudo      String  @unique
-  certified   Boolean @default(false)
-  email       String  @unique
+  pseudo      String      @unique
+  certified   Boolean     @default(false)
+  email       String      @unique
   avatar      String?
+  avatarPublicId    String?
   password    String
   description String?
   posts       Post[]
@@ -63,13 +64,13 @@ model User {
   likes       PostLiked[]
 }
 
-model PostLiked{
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
-  like        Boolean @default(false)
-  post        Post? @relation(fields: [post_id], references: [id])
-  post_id     Int
-  user        User? @relation(fields: [user_id], references: [id])
-  user_id     Int
-} 
+model PostLiked {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  like      Boolean  @default(false)
+  post      Post?    @relation(fields: [post_id], references: [id])
+  post_id   Int
+  user      User?    @relation(fields: [user_id], references: [id])
+  user_id   Int
+}

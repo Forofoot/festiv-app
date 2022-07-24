@@ -5,6 +5,9 @@ import { useState, useEffect } from "react"
 import toast, { Toaster } from 'react-hot-toast';
 import styled from "styled-components";
 import {device} from '../styles/device.css'
+import Image from 'next/image'
+import Profile from "../pages/profile/[pseudo]";
+
 const HeaderStyle = styled.header`
   padding:20px 50px;
   background-color: #fff;
@@ -89,7 +92,23 @@ export default function Navbar() {
             <li>
               <Link href={`/profile/${currentUser?.pseudo}`}>
                 <a>
-                  Account
+                  {currentUser?.avatar ? (
+                    <Image
+                      src={`${currentUser?.avatar}`}
+                      alt="Avatar"
+                      width={37}
+                      height={37}
+                      objectFit='cover'
+                    />
+                  ) : (
+                    <Image
+                      src={'/profile/avatar.webp'}
+                      alt="Avatar"
+                      width={37}
+                      height={37}
+                      objectFit='cover'
+                    />
+                  )}
                 </a>
               </Link>
             </li>
