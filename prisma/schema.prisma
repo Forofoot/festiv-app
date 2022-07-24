@@ -52,7 +52,7 @@ model User {
   updatedAt   DateTime           @updatedAt
   firstName   String
   lastName    String
-  pseudo      String
+  pseudo      String  @unique
   certified   Boolean @default(false)
   email       String  @unique
   avatar      String?

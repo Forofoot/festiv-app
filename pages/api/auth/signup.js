@@ -22,9 +22,15 @@ export default async function handler(
                     email
                 }
             })
+
+            const userPseudoExist = await prisma.user.findUnique({
+                where:{
+                    pseudo
+                }
+            })
     
             //Hash password
-            if(userExist){
+            if(userExist || userPseudoExist){
                 res.status(500).json({ message: 'Existe déjà'})
             }
              
