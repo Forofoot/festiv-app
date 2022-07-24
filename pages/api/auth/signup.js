@@ -28,7 +28,6 @@ export default async function handler(
                     pseudo
                 }
             })
-
     
             //Hash password
             if(userExist || userPseudoExist){

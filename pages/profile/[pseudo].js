@@ -12,8 +12,6 @@ export default function Profile({profile}){
     const [currentUser, setCurrentUser] = useState(null)
     const [currentOptions, setCurrentOptions] = useState(null)
     const [inputedUser, setInputedUser] = useState({
-        email: profile?.email,
-        pseudo: profile?.pseudo,
         description: profile?.description,
         password: "",
     })
@@ -27,38 +25,31 @@ export default function Profile({profile}){
         e.preventDefault()
         try{
             toast.loading('Chargement en cours...')
-            if(!inputedUser.email || !inputedUser.email.includes('@') || !inputedUser.pseudo){
+            const formData = new FormData()
+            formData.append("image", imageUploaded)
+            formData.append("description", inputedUser.description)
+            formData.append("password", inputedUser.password)
+            formData.append("currentAvatar", profile?.avatarPublicId)
+            formData.append("currentUserPseudo", profile?.pseudo)
+            const res = await fetch('/api/profile/modify', {
+                method: 'POST',
+                body: formData,
+            })
+            
+            if(res.ok){
+                const data = await res.json()
                 toast.remove()
-                toast.error('Erreur lors de la modification')
-            }else{
-                const formData = new FormData()
-                formData.append("image", imageUploaded)
-                formData.append("email", inputedUser.email)
-                formData.append("pseudo", inputedUser.pseudo)
-                formData.append("description", inputedUser.description)
-                formData.append("password", inputedUser.password)
-                formData.append("currentAvatar", profile?.avatarPublicId)
-                formData.append("currentUserPseudo", profile?.pseudo)
-                const res = await fetch('/api/profile/modify', {
-                    method: 'POST',
-                    body: formData,
+                setCookie("user", JSON.stringify(data), {
+                    path: '/',
+                    maxAge: 3600, // Expires after 1hr
+                    sameSite: true,
                 })
-                
-                if(res.ok){
-                    const data = await res.json()
-                    toast.remove()
-                    setCookie("user", JSON.stringify(data), {
-                        path: '/',
-                        maxAge: 3600, // Expires after 1hr
-                        sameSite: true,
-                    })
-                    toast.success('Profil modifié')
-                    router.push(`/profile/${data.pseudo}`)
-                    setCurrentOptions(null)
-                }else{
-                    toast.remove()
-                    toast.error('Erreur lors de la modification de vos infos')
-                }
+                toast.success('Profil modifié')
+                router.push(`/profile/${data.pseudo}`)
+                setCurrentOptions(null)
+            }else{
+                toast.remove()
+                toast.error('Erreur lors de la modification de vos infos')
             }
         }catch(error){
             console.log(error)
@@ -133,11 +124,6 @@ export default function Profile({profile}){
                             id='file-input'
                             name="avatar"
                         ></input>
-                        <label htmlFor="email">Email</label>
-                        <input name="email" type="Text"  value={inputedUser.email || ''} placeholder='Email' onChange={(e) => setInputedUser({ ...inputedUser, email:e.target.value })}/>
-
-                        <label htmlFor="pseudo">Pseudo</label>
-                        <input name="pseudo" type="Text"  value={inputedUser.pseudo || ''} placeholder='Pseudo' onChange={(e) => setInputedUser({ ...inputedUser, pseudo:e.target.value })}/>
 
                         <label htmlFor="description">Description</label>
                         <textarea name="description" type="Text"  value={inputedUser.description || ''} placeholder='Description' onChange={(e) => setInputedUser({ ...inputedUser, description:e.target.value })}/>
