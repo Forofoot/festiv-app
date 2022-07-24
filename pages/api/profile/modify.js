@@ -49,7 +49,7 @@ export default async function handler(
                         pseudo: currentUserPseudo
                     }
                 })
-                await prisma.$disconnect()
+                
                 if(userResult){
                     if(!password){
                         try{
@@ -64,7 +64,7 @@ export default async function handler(
                                         description
                                     }
                                 })
-                                await prisma.$disconnect()
+                                
                                 res.status(200).json({
                                     pseudo: userModified.pseudo,
                                     avatar: userModified.avatar
@@ -88,7 +88,7 @@ export default async function handler(
                                         avatar: imageData.url
                                     }
                                 })
-                                await prisma.$disconnect()
+                                
                                 res.status(200).json({
                                     pseudo: userModified.pseudo,
                                     avatar: userModified.avatar
@@ -113,7 +113,7 @@ export default async function handler(
                                         password: await hash(password, 12)
                                     }
                                 })
-                                await prisma.$disconnect()
+                                
                                 res.status(200).json({
                                     pseudo: userModified.pseudo
                                 })
@@ -138,7 +138,7 @@ export default async function handler(
                                         password: await hash(password, 12)
                                     }
                                 })
-                                await prisma.$disconnect()
+                                
                                 res.status(200).json({
                                     pseudo: userModified.pseudo,
                                     avatar: userModified.avatar

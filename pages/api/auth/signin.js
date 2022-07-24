@@ -27,7 +27,7 @@ export default async function handler(
                     pseudo: resultUser.pseudo,
                     avatar: resultUser.avatar
                 })
-                await prisma.$disconnect()
+                
             }
         }
 
