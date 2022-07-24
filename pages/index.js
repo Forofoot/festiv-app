@@ -20,6 +20,7 @@ export default function Home({data}) {
       </Head>
 
       <h1>Festiv-app</h1>
+      
       <h2>Bonjour {currentUser?.pseudo}</h2>
       <p>Nom des festivaliers</p>
       {data.map((elt, i) =>(
