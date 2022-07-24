@@ -39,6 +39,13 @@ export default createGlobalStyle`
     text-decoration: none;
   }
 
+  form{
+    display: flex;
+    align-items:center;
+    flex-direction: column;
+    gap: 15px;
+  }
+
   :root{
     --primary: #000000;
     --secondary: #7620BB;

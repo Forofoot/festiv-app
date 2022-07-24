@@ -1,9 +1,10 @@
 import { useCookies } from "react-cookie";
 import { useRouter } from 'next/router';
-import { Prisma, PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast, { Toaster } from "react-hot-toast";
+import Head from "next/head";
 
 export default function Profile({profile}){
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
@@ -95,6 +96,13 @@ export default function Profile({profile}){
 
     return(
         <>
+        <Head>
+            <title>Festiv-App | Page profile</title>
+            <meta
+                name="description"
+                content="Voici la page connexion de Festiv-app"
+            />
+        </Head>
         {profile?.pseudo ? (
             <>
             <Toaster/>

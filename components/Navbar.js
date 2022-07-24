@@ -61,7 +61,11 @@ export default function Navbar() {
       <nav>
         <div className="navActions">
           <h1>
-            Mon App
+            <Link href="/">
+              <a>
+                Mon app
+              </a>
+            </Link>
           </h1>
           <ul>
             <li>
