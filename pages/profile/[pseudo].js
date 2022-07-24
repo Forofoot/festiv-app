@@ -7,6 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Head from "next/head";
 
 export default function Profile({profile}){
+    const [imageUploaded, setImageUploaded] = useState();
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
     const [currentUser, setCurrentUser] = useState(null)
     const [currentOptions, setCurrentOptions] = useState(null)
@@ -18,6 +19,10 @@ export default function Profile({profile}){
     })
     const router = useRouter()
 
+    const handleChange = (event) => {
+        setImageUploaded(event.target.files[0]);
+      };
+
     const handleModifyInfos = async(e) =>{
         e.preventDefault()
         try{
@@ -26,18 +31,17 @@ export default function Profile({profile}){
                 toast.remove()
                 toast.error('Erreur lors de la modification')
             }else{
+                const formData = new FormData()
+                formData.append("image", imageUploaded)
+                formData.append("email", inputedUser.email)
+                formData.append("pseudo", inputedUser.pseudo)
+                formData.append("description", inputedUser.description)
+                formData.append("password", inputedUser.password)
+                formData.append("currentAvatar", profile?.avatarPublicId)
+                formData.append("currentUserPseudo", profile?.pseudo)
                 const res = await fetch('/api/profile/modify', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: inputedUser.email,
-                        pseudo: inputedUser.pseudo,
-                        description: inputedUser.description,
-                        password: inputedUser.password,
-                        currentUserPseudo: profile?.pseudo
-                    }),
+                    body: formData,
                 })
                 
                 if(res.ok){
@@ -120,6 +124,15 @@ export default function Profile({profile}){
                 <>
                     <h2>Modifier le profil</h2>
                     <form onSubmit={handleModifyInfos}>
+
+                        <label htmlFor='avatar'>Avatar</label>
+                        <input
+                            onChange={handleChange}
+                            accept=".jpg, .png, .gif, .jpeg"
+                            type="file"
+                            id='file-input'
+                            name="avatar"
+                        ></input>
                         <label htmlFor="email">Email</label>
                         <input name="email" type="Text"  value={inputedUser.email || ''} placeholder='Email' onChange={(e) => setInputedUser({ ...inputedUser, email:e.target.value })}/>
 

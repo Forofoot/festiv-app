@@ -43,12 +43,15 @@ CREATE TABLE `User` (
     `updatedAt` DATETIME(3) NOT NULL,
     `firstName` VARCHAR(191) NOT NULL,
     `lastName` VARCHAR(191) NOT NULL,
+    `pseudo` VARCHAR(191) NOT NULL,
     `certified` BOOLEAN NOT NULL DEFAULT false,
     `email` VARCHAR(191) NOT NULL,
     `avatar` VARCHAR(191) NULL,
+    `avatarPublicId` VARCHAR(191) NULL,
     `password` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
 
+    UNIQUE INDEX `User_pseudo_key`(`pseudo`),
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

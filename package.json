@@ -19,7 +19,9 @@
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.3.0",
     "styled-components": "^5.3.5",
-    "superjson": "^1.9.1"
+    "superjson": "^1.9.1",
+    "cloudinary": "^1.25.0",
+    "formidable": "^1.2.2"
   },
   "devDependencies": {
     "eslint": "8.20.0",
