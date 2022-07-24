@@ -2,6 +2,7 @@ import { useState } from "react"
 import toast, { Toaster } from 'react-hot-toast';
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function Signup () {
     const [inputedUser, setInputedUser] = useState({
@@ -62,6 +63,13 @@ export default function Signup () {
     }
     return(
         <>
+            <Head>
+                <title>Festiv-App | Inscription</title>
+                <meta
+                    name="description"
+                    content="Voici la page d'inscription de Festiv-app"
+                />
+            </Head>
             <Toaster/>
             <h1>S&apos;inscrire</h1>
 

@@ -2,6 +2,7 @@ import { useState } from "react"
 import toast, { Toaster } from 'react-hot-toast';
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function Signin () {
     const [inputedUser, setInputedUser] = useState({
@@ -55,6 +56,13 @@ export default function Signin () {
     }
     return(
         <>
+            <Head>
+                <title>Festiv-App | Connexion</title>
+                <meta
+                    name="description"
+                    content="Voici la page connexion de Festiv-app"
+                />
+            </Head>
             <Toaster/>
             <h1>Se connecter</h1>
 
