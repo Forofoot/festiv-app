@@ -1,10 +1,8 @@
 import { CookiesProvider } from "react-cookie";
 import Layout from '../components/Layout'
 import GlobalCSS from '../styles/global.css'
-import { GTM_ID } from '../lib/gtm'
-import { useEffect } from "react";
-import { useRouter } from "next/router"
-import * as gtag from '../lib/gtatg'
+import {useEffect} from 'react'
+import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
@@ -17,10 +15,11 @@ function MyApp({ Component, pageProps }) {
       router.events.off ('routeChangeComplete', handleRouteChange)
     }
   }, [router.events])
-  
-  return (
+return (
     <>
-      <script
+      <CookiesProvider>
+        <GlobalCSS/>
+        <script
           dangerouslySetInnerHTML={{
             __html: `     
               window.dataLayer = window.dataLayer || [];
@@ -32,8 +31,6 @@ function MyApp({ Component, pageProps }) {
             `,
           }}
         />
-      <CookiesProvider>
-        <GlobalCSS/>
         <Layout>
           <Component {...pageProps} />
         </Layout>
