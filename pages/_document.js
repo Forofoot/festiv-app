@@ -76,7 +76,7 @@ export default class MyDocument extends Document {
 
         <body>
           <script 
-            async src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            async src={`https://www.googletagmanager.com/ns.html?id=GTM-TJLZS9J `}
           />
           <Main />
 
