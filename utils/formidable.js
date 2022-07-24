@@ -10,7 +10,6 @@ export async function getImage(formData) {
   });
 
   return (
-    data.files.image,
-    data.fields
+    data.files.image
   )
 }
