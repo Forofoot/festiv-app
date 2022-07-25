@@ -31,8 +31,6 @@ export default async function handler(
               });
             
             const file = data.files.image
-            const {email} = data.fields
-            const {pseudo} = data.fields
             const {password} = data.fields
             const {description} = data.fields
             const {currentUserPseudo} = data.fields
@@ -59,8 +57,6 @@ export default async function handler(
                                         pseudo: currentUserPseudo
                                     },
                                     data:{
-                                        email,
-                                        pseudo,
                                         description
                                     }
                                 })
@@ -81,8 +77,6 @@ export default async function handler(
                                         pseudo: currentUserPseudo
                                     },
                                     data:{
-                                        email,
-                                        pseudo,
                                         description,
                                         avatarPublicId: imageData.public_id,
                                         avatar: imageData.url
@@ -107,15 +101,14 @@ export default async function handler(
                                         pseudo: currentUserPseudo
                                     },
                                     data:{
-                                        email,
-                                        pseudo,
                                         description,
                                         password: await hash(password, 12)
                                     }
                                 })
                                 await prisma.$disconnect()
                                 res.status(200).json({
-                                    pseudo: userModified.pseudo
+                                    pseudo: userModified.pseudo,
+                                    avatar: userModified.avatar
                                 })
                             }else{
                                 const deleteOldImage = await cloudinary.uploader.destroy(
@@ -130,8 +123,6 @@ export default async function handler(
                                         pseudo: currentUserPseudo
                                     },
                                     data:{
-                                        email,
-                                        pseudo,
                                         description,
                                         avatar:imageData.url,
                                         avatarPublicId: imageData.public_id,
