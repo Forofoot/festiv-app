@@ -36,7 +36,8 @@ export default async function handler(
             const {currentUserPseudo} = data.fields
             const {currentAvatar} = data.fields
             
-            console.log(file.path)
+            console.log(file.filepath)
+            console.log(description)
     
             if(currentUserPseudo){
                 const userResult = await prisma.user.findUnique({
@@ -67,7 +68,7 @@ export default async function handler(
                                     currentAvatar
                                 );
                                 
-                                const imageData = await uploadAvatar(file.path);
+                                const imageData = await uploadAvatar(file.filepath);
                                 console.log(imageData.public_id)
                                 const userModified = await prisma.user.update({
                                     where:{
@@ -112,7 +113,7 @@ export default async function handler(
                                     currentAvatar
                                 );
 
-                                const imageData = await uploadAvatar(file.path);
+                                const imageData = await uploadAvatar(file.filepath);
                                 
                                 console.log(currentAvatar)
                                 const userModified = await prisma.user.update({
