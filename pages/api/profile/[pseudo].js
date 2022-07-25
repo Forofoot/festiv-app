@@ -32,9 +32,11 @@ export default async function handler(
             await prisma.$disconnect()
             if(userResult){
                 if(imageUploaded){
-                    const deleteOldImage = await cloudinary.uploader.destroy(
-                        userResult.avatarPublicId
-                    );
+                    if(userResult.avatarPublicId){
+                        const deleteOldImage = await cloudinary.uploader.destroy(
+                            userResult.avatarPublicId
+                        );
+                    }
                     const imageData = await uploadAvatar(imageUploaded.filepath);
                     const userModified = await prisma.user.update({
                         where:{
