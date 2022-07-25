@@ -31,7 +31,7 @@ export default function Profile({profile}){
             formData.append("password", inputedUser.password)
             formData.append("currentAvatar", profile?.avatarPublicId)
             formData.append("currentUserPseudo", profile?.pseudo)
-            const res = await fetch('/api/profile/modify', {
+            const res = await fetch('https://festivap-em.fr/api/profile/modify', {
                 method: 'POST',
                 body: formData,
             })
