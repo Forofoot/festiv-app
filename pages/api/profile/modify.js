@@ -25,7 +25,6 @@ export default async function handler(
             form.parse(req, function (err, fields, files) {
                 if (err) return reject(err);
                 resolve({ fields, files });
-                res.status(200).json({message: 'Donnée récupérée'})
             });
         });
         
