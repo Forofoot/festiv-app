@@ -8,17 +8,16 @@ import Head from "next/head";
 
 export default function Profile({profile}){
     const [imageUploaded, setImageUploaded] = useState();
+    const [previewImage, setpreviewImage] = useState();
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
     const [currentUser, setCurrentUser] = useState(null)
     const [currentOptions, setCurrentOptions] = useState(null)
-    const [inputedUser, setInputedUser] = useState({
-        description: profile?.description,
-        password: "",
-    })
+
     const router = useRouter()
 
     const handleChange = (event) => {
         setImageUploaded(event.target.files[0]);
+        setpreviewImage(URL.createObjectURL(event.target.files[0]))
       };
 
     const handleModifyInfos = async(e) =>{
@@ -119,6 +118,7 @@ export default function Profile({profile}){
                         <button type='submit'>Modifier</button>
                     </form>
                     <p onClick={(e) => handleDeleteUser(e)}>Supprimer le compte</p>
+                    <img src={previewImage} width="500" height="500"/>
                 </>
             )}
             </>
