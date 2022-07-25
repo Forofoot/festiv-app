@@ -45,21 +45,7 @@ export default async function handler(
                 await prisma.$disconnect()
                 if(userResult){
                     if(!password){
-                        if(!file.filepath){
-                            const userModified = await prisma.user.update({
-                                where:{
-                                    pseudo: currentUserPseudo
-                                },
-                                data:{
-                                    description
-                                }
-                            })
-                            await prisma.$disconnect()
-                            res.status(200).json({
-                                pseudo: userModified.pseudo,
-                                avatar: userModified.avatar
-                            })
-                        }else{
+                        if(file){
                             const deleteOldImage = await cloudinary.uploader.destroy(
                                 currentAvatar
                             );
@@ -81,16 +67,13 @@ export default async function handler(
                                 pseudo: userModified.pseudo,
                                 avatar: userModified.avatar
                             })
-                        }
-                    }else{
-                        if(!file.filepath){
+                        }else{
                             const userModified = await prisma.user.update({
                                 where:{
                                     pseudo: currentUserPseudo
                                 },
                                 data:{
-                                    description,
-                                    password: await hash(password, 12)
+                                    description
                                 }
                             })
                             await prisma.$disconnect()
@@ -98,7 +81,9 @@ export default async function handler(
                                 pseudo: userModified.pseudo,
                                 avatar: userModified.avatar
                             })
-                        }else{
+                        }
+                    }else{
+                        if(file){
                             const deleteOldImage = await cloudinary.uploader.destroy(
                                 currentAvatar
                             );
@@ -114,6 +99,21 @@ export default async function handler(
                                     description,
                                     avatar:imageData.url,
                                     avatarPublicId: imageData.public_id,
+                                    password: await hash(password, 12)
+                                }
+                            })
+                            await prisma.$disconnect()
+                            res.status(200).json({
+                                pseudo: userModified.pseudo,
+                                avatar: userModified.avatar
+                            })
+                        }else{
+                            const userModified = await prisma.user.update({
+                                where:{
+                                    pseudo: currentUserPseudo
+                                },
+                                data:{
+                                    description,
                                     password: await hash(password, 12)
                                 }
                             })
