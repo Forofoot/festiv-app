@@ -26,7 +26,7 @@ export default async function handler(
                 if (err) return reject(err);
                 resolve({ fields, files });
             });
-            });
+        });
         
         const file = data.files.image
         const {password} = data.fields
@@ -34,6 +34,7 @@ export default async function handler(
         const {currentUserPseudo} = data.fields
         const {currentAvatar} = data.fields
 
+        
         if(currentUserPseudo){
             const userResult = await prisma.user.findUnique({
                 where:{
@@ -62,7 +63,7 @@ export default async function handler(
                             currentAvatar
                         );*/
                         
-                        const imageData = await uploadAvatar(file.path);
+                        //const imageData = await uploadAvatar(file.path);
                         const userModified = await prisma.user.update({
                             where:{
                                 pseudo: currentUserPseudo
@@ -103,7 +104,7 @@ export default async function handler(
                             currentAvatar
                         );*/
 
-                        const imageData = await uploadAvatar(file.path);
+                        //const imageData = await uploadAvatar(file.path);
 
                         const userModified = await prisma.user.update({
                             where:{
