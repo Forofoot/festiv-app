@@ -46,7 +46,7 @@ export default async function handler(
                 if(userResult){
                     if(!password){
                         try{
-                            if(!file){
+                            if(!file.filepath){
                                 const userModified = await prisma.user.update({
                                     where:{
                                         pseudo: currentUserPseudo
@@ -90,7 +90,7 @@ export default async function handler(
                         }
                     }else{
                         try{
-                            if(!file){
+                            if(!file.filepath){
                                 const userModified = await prisma.user.update({
                                     where:{
                                         pseudo: currentUserPseudo
