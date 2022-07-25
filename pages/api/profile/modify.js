@@ -35,9 +35,6 @@ export default async function handler(
             const {description} = data.fields
             const {currentUserPseudo} = data.fields
             const {currentAvatar} = data.fields
-            
-            console.log(file.filepath)
-            console.log(description)
     
             if(currentUserPseudo){
                 const userResult = await prisma.user.findUnique({
