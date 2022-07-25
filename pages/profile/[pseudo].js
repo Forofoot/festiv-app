@@ -23,38 +23,29 @@ export default function Profile({profile}){
 
     const handleModifyInfos = async(e) =>{
         e.preventDefault()
-        try{
-            toast.loading('Chargement en cours...')
-            const formData = new FormData()
-            formData.append("image", imageUploaded)
-            formData.append("description", inputedUser.description)
-            formData.append("password", inputedUser.password)
-            formData.append("currentAvatar", profile?.avatarPublicId)
-            formData.append("currentUserPseudo", profile?.pseudo)
-            const res = await fetch('https://festivap-em.fr/api/profile/modify', {
-                method: 'POST',
-                body: formData,
+        toast.loading('Chargement en cours...')
+        const formData = new FormData()
+        formData.append("image", imageUploaded)
+        const res = await fetch(`/api/profile/${profile?.pseudo}`, {
+            method: 'POST',
+            body: formData,
+        })
+        
+        if(res.ok){
+            const data = await res.json()
+            toast.remove()
+            setCookie("user", JSON.stringify(data), {
+                path: '/',
+                maxAge: 3600, // Expires after 1hr
+                sameSite: true,
             })
-            
-            if(res.ok){
-                const data = await res.json()
-                toast.remove()
-                setCookie("user", JSON.stringify(data), {
-                    path: '/',
-                    maxAge: 3600, // Expires after 1hr
-                    sameSite: true,
-                })
-                toast.success('Profil modifié')
-                router.push(`/profile/${data.pseudo}`)
-                setCurrentOptions(null)
-            }else{
-                toast.remove()
-                toast.error('Erreur lors de la modification de vos infos')
-            }
-        }catch(error){
-            console.log(error)
+            toast.success('Profil modifié')
+            router.push(`/profile/${data.pseudo}`)
+            setCurrentOptions(null)
+        }else{
+            toast.remove()
+            toast.error('Erreur lors de la modification de vos infos')
         }
-
     }
 
     const handleDeleteUser = async(e) => {
@@ -124,12 +115,6 @@ export default function Profile({profile}){
                             id='file-input'
                             name="avatar"
                         ></input>
-
-                        <label htmlFor="description">Description</label>
-                        <textarea name="description" type="Text"  value={inputedUser.description || ''} placeholder='Description' onChange={(e) => setInputedUser({ ...inputedUser, description:e.target.value })}/>
-
-                        <label htmlFor="password">Mot de passe</label>
-                        <input type="password" name="password" value={inputedUser.password || ""} placeholder='Mot de passe' minLength={8} onChange={(e) => setInputedUser({ ...inputedUser, password:e.target.value })}/>
                         
                         <button type='submit'>Modifier</button>
                     </form>
