@@ -25,8 +25,9 @@ export default async function handler(
             form.parse(req, function (err, fields, files) {
                 if (err) return reject(err);
                 resolve({ fields, files });
+                res.status(200).json({message: 'Donnée récupérée'})
             });
-            });
+        });
         
         const file = data.files.image
         const {password} = data.fields
@@ -128,5 +129,6 @@ export default async function handler(
         }
     }catch(e){
         console.log(e)
+        res.status(500).json({message : 'Erreur sa mère'})
     }
 }
