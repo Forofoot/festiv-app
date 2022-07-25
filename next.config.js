@@ -9,7 +9,7 @@ module.exports = {
     domains: ['res.cloudinary.com']
   },
   env: {
-    CLOUD_NAME: process.env.CLOUD_NAME,
+    CLOUD_NAME: process.env.CLOUD_NAME
   },
   nextConfig,
   productionBrowserSourceMaps: true,
