@@ -36,10 +36,6 @@ export default async function handler(
             const {currentUserPseudo} = data.fields
             const {currentAvatar} = data.fields
 
-            //Validate
-            if (!email || !pseudo) {
-                res.status(422).json({ message: 'Données invalides' })
-            }
     
             if(currentUserPseudo){
                 const userResult = await prisma.user.findUnique({
