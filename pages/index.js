@@ -3,11 +3,24 @@ import { PrismaClient } from '@prisma/client'
 import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import { useRouter } from 'next/dist/client/router'
+import styled from 'styled-components'
 
+const PostContainer = styled.section`
+  .postContainer{
+    display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+  }
+  .post{
+    
+  }
+`
 export default function Home({post}) {
 
   const [currentUser, setCurrentUser] = useState(null)
   const [cookies] = useCookies(['user'])
+  
   const router = useRouter()
   const handleAddPost = async() =>{
     const res = await fetch(`/api/post/createPost`, {
@@ -26,11 +39,42 @@ export default function Home({post}) {
     }
   }
 
+  const handleDeletePost = async(id) => {
+    const res = await fetch(`/api/post/deletePost`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id:id
+      })
+    })
+    if(res.ok){
+      router.replace(router.asPath) 
+    }
+  }
+
+  const handleAddComment = async(e,id) => {
+    e.preventDefault()
+    const res = await fetch(`/api/post/addComment`, {
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id:id,
+        commentContent:e.target.comment.value
+      })
+    })
+    if(res.ok){
+      router.replace(router.asPath)
+    }
+  }
   useEffect(() => {
     setCurrentUser(cookies.user)
   }, [cookies.user])
   return (
-    <div>
+    <PostContainer>
       <Head>
         <title>Festiv-App</title>
         <meta
@@ -44,18 +88,58 @@ export default function Home({post}) {
       <h2>Bonjour {currentUser?.pseudo}</h2>
       <p>Nom des festivaliers</p>
       <p onClick={handleAddPost}>Ajouter un festival</p>
-      {post.map((elt, i) =>(
-        <div key={i}>
-          <p>{elt.content}</p>
-        </div>
-      ))}
-    </div>
+      <div className='postContainer'>
+        {post.map((elt, i) =>(
+          <div className='post' key={i}>
+            <p>{elt.content}</p>
+            <p>{elt.description}</p>
+            <p>{elt.festival.title}</p>
+            <p>De {elt.user.pseudo}</p>
+            {elt.comments.map((com,index) => (
+              <p key={index}>{com.content}</p>
+            ))}
+            <p onClick={() => handleDeletePost(elt.id)}>Supprimer</p>
+
+            <p>Ajouter un commentaire : </p>
+            <form onSubmit={(event) => handleAddComment(event, elt.id)}>
+              <input type="text" placeholder='Commentaire' name='comment'/>
+            </form>
+          </div>
+        ))}
+      </div>
+    </PostContainer>
   )
 }
 
 export async function getServerSideProps(){
   const prisma = new PrismaClient()
-  const data = await prisma.post.findMany()
+  const data = await prisma.post.findMany({
+    select:{
+      id:true,
+      content:true,
+      description:true,
+      user:{
+        select:{
+          pseudo:true
+        }
+      },
+      festival:{
+        select:{
+          title:true
+        }
+      },
+      comments:{
+        select:{
+          content: true,
+          user:{
+            select:{
+              pseudo:true
+            }
+          }
+        }
+      }
+    }
+  })
   return{
     props:{
       post: data
