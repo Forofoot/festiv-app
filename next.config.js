@@ -11,6 +11,10 @@ module.exports = {
   env: {
     CLOUD_NAME: process.env.CLOUD_NAME
   },
+  experimental: {
+    // Defaults to 50MB
+    isrMemoryCacheSize: 0,
+  },
   nextConfig,
   productionBrowserSourceMaps: true,
 }
