@@ -2,19 +2,28 @@ import Head from 'next/head'
 import { PrismaClient } from '@prisma/client'
 import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
+import { useRouter } from 'next/dist/client/router'
 
 export default function Home({post}) {
 
   const [currentUser, setCurrentUser] = useState(null)
   const [cookies] = useCookies(['user'])
-
+  const router = useRouter()
   const handleAddPost = async() =>{
     const res = await fetch(`/api/post/createPost`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          content: 'Test Festival '+Math.floor(Math.random() * 1000) + 1,
+          festival_id:1,
+          user_id:21
+       }),
     })
+    if(res.ok){
+      router.replace(router.asPath) 
+    }
   }
 
   useEffect(() => {
@@ -44,13 +53,12 @@ export default function Home({post}) {
   )
 }
 
-export async function getStaticProps(){
+export async function getServerSideProps(){
   const prisma = new PrismaClient()
   const data = await prisma.post.findMany()
   return{
     props:{
       post: data
-    },
-    revalidate: 1,
+    }
   }
 }
