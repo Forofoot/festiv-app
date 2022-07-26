@@ -5,19 +5,18 @@ export default async function handler(
 ) {
 
     try{
+        const {content, festival_id, user_id} = req.body
         const prisma = new PrismaClient();
 
         const createPost = await prisma.post.create({
             data:{
-                content: 'Test Festival '+Math.floor(Math.random() * 1000) + 1,
-                festival_id:1,
-                user_id:21
+                content:content,
+                festival_id: festival_id,
+                user_id: user_id
             }
         })
-        if(createPost){
-            res.status(200).json("lezgoooo")
-        }
-        res.status(500).json('po marché')
+        res.status(200).json("lezgoooo")
+        
     }catch(e){
         console.log(e)
     }
