@@ -20,6 +20,7 @@ export default function Home({post}) {
 
   const [currentUser, setCurrentUser] = useState(null)
   const [cookies] = useCookies(['user'])
+  const [like, setLike] = useState([])
   
   const router = useRouter()
   const handleAddPost = async() =>{
@@ -53,7 +54,6 @@ export default function Home({post}) {
       router.replace(router.asPath) 
     }
   }
-
   const handleAddComment = async(e,id) => {
     e.preventDefault()
     const res = await fetch(`/api/post/addComment`, {
@@ -64,6 +64,41 @@ export default function Home({post}) {
       body: JSON.stringify({
         id:id,
         commentContent:e.target.comment.value
+      })
+    })
+    if(res.ok){
+      router.replace(router.asPath)
+    }
+  }
+
+  const handleCreateLike = async(e, post, pseudo) => {
+    e.preventDefault()
+    const res = await fetch(`/api/post/createLike`, {
+      method:'POST',
+      headers:{
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: post,
+        currentUser: currentUser.pseudo
+      })
+    })
+    if(res.ok){
+      router.replace(router.asPath)
+    }
+  }
+
+  const handleRemoveLike = async(e, post, pseudo) => {
+    e.preventDefault()
+    console.log(post)
+    const res = await fetch(`/api/post/removeLike`, {
+      method:'POST',
+      headers:{
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: post,
+        currentUser: currentUser.pseudo
       })
     })
     if(res.ok){
@@ -104,6 +139,27 @@ export default function Home({post}) {
             <form onSubmit={(event) => handleAddComment(event, elt.id)}>
               <input type="text" placeholder='Commentaire' name='comment'/>
             </form>
+            
+            {elt.likes.length ? (
+              <div>
+                {elt.likes.map((lik, index) => (
+                  <div key={index}>
+                    {elt.likes.length}
+                    {lik.user.pseudo === currentUser?.pseudo ? (
+                      <p onClick={(event) => handleRemoveLike(event, elt.id, currentUser.pseudo)}>c'est like</p>
+                    ) : (
+                      <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c'est pas like</p>
+                    )
+                    }
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                0
+                <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c'est pas like</p>
+              </>
+            )}
           </div>
         ))}
       </div>
@@ -131,6 +187,15 @@ export async function getServerSideProps(){
       comments:{
         select:{
           content: true,
+          user:{
+            select:{
+              pseudo:true
+            }
+          }
+        }
+      },
+      likes:{
+        select:{
           user:{
             select:{
               pseudo:true
