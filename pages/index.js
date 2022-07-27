@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import { useRouter } from 'next/dist/client/router'
 import styled from 'styled-components'
+import Like from '../components/Like'
+import { parseCookies } from "../helpers"
 
 const PostContainer = styled.section`
   .postContainer{
@@ -16,11 +18,11 @@ const PostContainer = styled.section`
     
   }
 `
-export default function Home({post}) {
+export default function Home({post, currentUserLikes}) {
 
   const [currentUser, setCurrentUser] = useState(null)
   const [cookies] = useCookies(['user'])
-  const [like, setLike] = useState([])
+  const [userLikes, setUserLikes] = useState([])
   
   const router = useRouter()
   const handleAddPost = async() =>{
@@ -71,43 +73,20 @@ export default function Home({post}) {
     }
   }
 
-  const handleCreateLike = async(e, post, pseudo) => {
-    e.preventDefault()
-    const res = await fetch(`/api/post/createLike`, {
-      method:'POST',
-      headers:{
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: post,
-        currentUser: currentUser.pseudo
-      })
-    })
-    if(res.ok){
-      router.replace(router.asPath)
-    }
-  }
-
-  const handleRemoveLike = async(e, post, pseudo) => {
-    e.preventDefault()
-    console.log(post)
-    const res = await fetch(`/api/post/removeLike`, {
-      method:'POST',
-      headers:{
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: post,
-        currentUser: currentUser.pseudo
-      })
-    })
-    if(res.ok){
-      router.replace(router.asPath)
-    }
-  }
   useEffect(() => {
     setCurrentUser(cookies.user)
-  }, [cookies.user])
+    let likesList = []
+
+    if(currentUserLikes){
+      currentUserLikes.map((elt,i) => {
+        likesList.push(elt.post_id)
+      })
+    }
+    
+    setUserLikes(likesList)
+  }, [cookies.user, currentUserLikes])
+
+  console.log(userLikes)
   return (
     <PostContainer>
       <Head>
@@ -140,26 +119,15 @@ export default function Home({post}) {
               <input type="text" placeholder='Commentaire' name='comment'/>
             </form>
             
-            {elt.likes.length ? (
               <div>
-                {elt.likes.map((lik, index) => (
-                  <div key={index}>
-                    {elt.likes.length}
-                    {lik.user.pseudo === currentUser?.pseudo ? (
-                      <p onClick={(event) => handleRemoveLike(event, elt.id, currentUser.pseudo)}>c&apos;est like</p>
+                    <Like currentPost={elt.id} likesCount={elt.likes.length} currentPseudo={currentUser?.pseudo} liked={userLikes.includes(elt.id) ? true : false}/>
+                    {/*lik.user.pseudo === currentUser?.pseudo ? (
+                      <p onClick={(event) => handleLike(event, elt.id, currentUser.pseudo)}>c&apos;est like</p>
                     ) : (
                       <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c&apos;est pas like</p>
                     )
-                    }
-                  </div>
-                ))}
+                    */}
               </div>
-            ) : (
-              <>
-                0
-                <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c&apos;est pas like</p>
-              </>
-            )}
           </div>
         ))}
       </div>
@@ -167,7 +135,8 @@ export default function Home({post}) {
   )
 }
 
-export async function getServerSideProps(){
+export async function getServerSideProps({req, res}){
+  const cookie = parseCookies(req)
   const prisma = new PrismaClient()
   const data = await prisma.post.findMany({
     select:{
@@ -205,6 +174,31 @@ export async function getServerSideProps(){
       }
     }
   })
+
+  if(res){
+    if(cookie.user){
+      const parsedUser = JSON.parse(cookie.user)
+      const user = await prisma.user.findUnique({
+        where: {
+          pseudo: parsedUser.pseudo,
+
+        },
+        select:{
+          likes:{
+            select:{
+              post_id:true
+            }
+          }
+        }
+      })
+      return{
+        props:{
+          post: data,
+          currentUserLikes: user.likes
+        }
+      }
+    }
+  }
   return{
     props:{
       post: data
