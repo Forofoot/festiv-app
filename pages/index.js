@@ -146,9 +146,9 @@ export default function Home({post}) {
                   <div key={index}>
                     {elt.likes.length}
                     {lik.user.pseudo === currentUser?.pseudo ? (
-                      <p onClick={(event) => handleRemoveLike(event, elt.id, currentUser.pseudo)}>c'est like</p>
+                      <p onClick={(event) => handleRemoveLike(event, elt.id, currentUser.pseudo)}>c&apos;est like</p>
                     ) : (
-                      <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c'est pas like</p>
+                      <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c&apos;est pas like</p>
                     )
                     }
                   </div>
@@ -157,7 +157,7 @@ export default function Home({post}) {
             ) : (
               <>
                 0
-                <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c'est pas like</p>
+                <p onClick={(event) => handleCreateLike(event, elt.id, currentUser.pseudo)}>c&apos;est pas like</p>
               </>
             )}
           </div>
