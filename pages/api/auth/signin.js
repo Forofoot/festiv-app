@@ -25,7 +25,8 @@ export default async function handler(
             }else{
                 res.status(200).json({
                     pseudo: resultUser.pseudo,
-                    avatar: resultUser.avatar
+                    avatar: resultUser.avatar,
+                    id: resultUser.id
                 })
                 
             }

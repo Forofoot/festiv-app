@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
+import toast, { Toaster } from 'react-hot-toast'
 
-export default function Like({liked, currentPost, currentPseudo, likesCount}) {
+export default function Like({liked, currentPost, currentUserId, likesCount}) {
     const router = useRouter()
     const [isLiked, setIsLiked] = useState(null)
     const [totalLikes, setTotalLikes] = useState(likesCount)
@@ -9,33 +10,39 @@ export default function Like({liked, currentPost, currentPseudo, likesCount}) {
     useEffect(() => {
         setIsLiked(liked)
     }, [liked])
-    const handleLike = async(e, currentPost, currentPseudo) => {
+    const handleLike = async(e, currentPost, currentUserId) => {
         e.preventDefault()
-        setIsLiked(!isLiked)
-        if(!isLiked){
-            setTotalLikes(totalLikes + 1)
+        if(!currentUserId){
+            toast.error('Veuillez vous connecter')
+            router.push('/auth/signin')
         }else{
-            setTotalLikes(totalLikes - 1)
-        }
-        const res = await fetch(`/api/post/like`, {
-            method:'POST',
-            headers:{
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-            id: currentPost,
-            currentUser: currentPseudo
+            setIsLiked(!isLiked)
+            if(!isLiked){
+                setTotalLikes(totalLikes + 1)
+            }else{
+                setTotalLikes(totalLikes - 1)
+            }
+            const res = await fetch(`/api/post/like`, {
+                method:'POST',
+                headers:{
+                'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                id: currentPost,
+                currentUser: currentUserId
+                })
             })
-        })
-        if(res.ok){
-            console.log('liké')
-        }else{
-            setIsLiked(!liked)
+            if(res.ok){
+                console.log('liké')
+            }else{
+                setIsLiked(!liked)
+            }
         }
     }
 
     return (
-    <div onClick={(event) => handleLike(event, currentPost, currentPseudo)}>
+    <div onClick={(event) => handleLike(event, currentPost, currentUserId)}>
+            <Toaster/>
         
             {totalLikes}
             

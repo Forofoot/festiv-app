@@ -5,14 +5,14 @@ export default async function handler(
 ) {
 
     try{
-        const {id, commentContent} = req.body
+        const {id, commentContent, currentUserId} = req.body
         const prisma = new PrismaClient();
 
         const createComment = await prisma.comment.create({
             data:{
                 content:commentContent,
                 post_id:id,
-                user_id:10                
+                user_id:currentUserId                
             }
         })
         res.status(200).json("lezgoooo")

@@ -11,7 +11,7 @@ export default async function handler(
         const searchPost = await prisma.postLiked.findFirst({
             where:{
                 post_id: id,
-                user_id:32
+                user_id:currentUser
             }
         })
 
@@ -27,11 +27,11 @@ export default async function handler(
                 data:{
                     like:true,
                     post_id:id,
-                    user_id:32
+                    user_id:currentUser
                 }
             })
+            res.status(200).json("lezgoooo")
         }
-        res.status(200).json("lezgoooo")
         
     }catch(e){
         console.log(e)
