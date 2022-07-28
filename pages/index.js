@@ -65,7 +65,8 @@ export default function Home({post, currentUserLikes}) {
       },
       body: JSON.stringify({
         id:id,
-        commentContent:e.target.comment.value
+        commentContent:e.target.comment.value,
+        currentUserId: currentUser?.id
       })
     })
     if(res.ok){
@@ -120,7 +121,7 @@ export default function Home({post, currentUserLikes}) {
             </form>
             
               <div>
-                    <Like currentPost={elt.id} likesCount={elt.likes.length} currentPseudo={currentUser?.pseudo} liked={userLikes.includes(elt.id) ? true : false}/>
+                    <Like currentPost={elt.id} likesCount={elt.likes.length} currentUserId={currentUser?.id} liked={userLikes.includes(elt.id) ? true : false}/>
                     {/*lik.user.pseudo === currentUser?.pseudo ? (
                       <p onClick={(event) => handleLike(event, elt.id, currentUser.pseudo)}>c&apos;est like</p>
                     ) : (
