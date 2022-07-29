@@ -43,11 +43,11 @@ export default function Post({data, currentUserId, currentUserLikes}) {
         }
     }
 
-    const handleShare = (e,id) =>{
+    const handleShare = (e,id, title, description) =>{
         e.preventDefault()
         navigator.share({
-            title: 'test',
-            text: 'Yeloooo',
+            title: title,
+            text: description,
             url: '/details/'+id
         })
     }
@@ -85,7 +85,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
             </div>
 
             <div>
-                <p onClick={(event) => handleShare(event, data.id)}>Partager</p>
+                <p onClick={(event) => handleShare(event, data.id, data.content, data.description)}>Partager</p>
             </div>
             <Link href={`/details/${data.id}`}><a>Voir les détails</a></Link>
         </div>
