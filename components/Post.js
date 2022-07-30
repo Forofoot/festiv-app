@@ -69,7 +69,13 @@ export default function Post({data, currentUserId, currentUserLikes}) {
             <p>{data.content}</p>
             <p>{data.description}</p>
             <p>{data.festival?.title}</p>
-            <p>De {data.user?.pseudo}</p>
+            <p>De 
+                <Link href={`/profile/${data.user?.pseudo}`}>
+                  <a>
+                    {data.user?.pseudo}
+                  </a>
+                </Link>
+            </p>
             {data.comments?.map((com,index) => (
                 <p key={index}>{com.content}</p>
             ))}

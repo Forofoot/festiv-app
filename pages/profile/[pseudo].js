@@ -5,13 +5,21 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast, { Toaster } from "react-hot-toast";
 import Head from "next/head";
+import { parseCookies } from "../../helpers";
+import Follow from "../../components/Follow";
 
-export default function Profile({profile}){
+export default function Profile({profile, currentUserFollows}){
     const [imageUploaded, setImageUploaded] = useState();
     const [previewImage, setpreviewImage] = useState();
     const [cookies, setCookie, removeCookie] = useCookies(['user'])
     const [currentUser, setCurrentUser] = useState(null)
     const [currentOptions, setCurrentOptions] = useState(null)
+    const [currentShow, setCurrentShow] = useState(null)
+    const [currentFollowings, setCurrentFollowings] = useState([])
+    const [currentFollowers, setCurrentFollowers] = useState([])
+
+    const [userFollows, setUserFollows] = useState([])
+    const [userFollowers, setUserFollowers] = useState([])
 
     const router = useRouter()
 
@@ -75,9 +83,84 @@ export default function Profile({profile}){
             console.log(error)
         }
     }
+
+    const handleShowFollowings = async(e) =>{
+        setCurrentShow('showFollowings')
+        console.log(currentFollowings)
+        try{
+            if(!currentFollowings.followings){
+                const res = await fetch('/api/profile/showFollowings', {
+                    method:'POST',
+                    headers:{
+                        'Content-Type':  'application/json'
+                    },
+                    body:JSON.stringify({
+                        user: profile.id
+                    })
+                })
+                const data = await res.json()
+                if(res.ok){
+                    if(data){
+                        setCurrentFollowings(data)
+                    }
+                }else{
+                    setCurrentShow(null)
+                    toast.error('Erreur')
+                }
+            }
+        }catch(e){
+            console.log(e)
+        }
+    }
+
+    const handleShowFollowers = async(e) =>{
+        setCurrentShow('showFollowers')
+        try{
+            if(!currentFollowers.followers){
+                const res = await fetch('/api/profile/showFollowers', {
+                    method:'POST',
+                    headers:{
+                        'Content-Type':  'application/json'
+                    },
+                    body:JSON.stringify({
+                        user: profile.id
+                    })
+                })
+                const data = await res.json()
+                if(res.ok){
+                    if(data){
+                        setCurrentFollowers(data)
+                    }
+                }else{
+                    setCurrentShow(null)
+                    toast.error('Erreur')
+                }
+            }
+        }catch(e){
+            console.log(e)
+        }
+    }
     useEffect(() => {
+        let followersList = []
+        let followsList = []
+
         setCurrentUser(cookies.user)
-    }, [cookies.user])
+        setCurrentShow()
+        setCurrentFollowers([])
+        setCurrentFollowings([])
+
+        if(currentUserFollows){
+            currentUserFollows.followers.map((elt,i) => {
+                followersList.push(elt.following_id)
+            })
+            currentUserFollows.followings.map((elt,i) => {
+                followsList.push(elt.follower_id)
+            })
+        }
+
+        setUserFollowers(followersList)
+        setUserFollows(followsList)
+    }, [cookies.user, router.asPath, currentUserFollows])
 
     return(
         <>
@@ -91,14 +174,64 @@ export default function Profile({profile}){
         {profile?.pseudo ? (
             <>
             <Toaster/>
-            <h1>Page profile de {profile?.pseudo}</h1>
+            <h1>Page profile de {profile?.pseudo}  ( Abonné : <p onClick={() =>handleShowFollowings()}>{profile?.followings.length}</p> || Abonnement : <p onClick={() =>handleShowFollowers()}>{profile?.followers.length})</p></h1>
+
+            {currentUserFollows && (
+                <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id}/>
+            )}
+            
             {profile?.description &&(
                 <p>{profile.description}</p>
             )}
+            
             {profile?.pseudo  == currentUser?.pseudo && (
                 <p onClick={() => setCurrentOptions(!currentOptions)}>
                     Modifier
                 </p>
+            )}
+
+            {currentShow == 'showFollowings' && (
+                <>
+                    {currentFollowings ? (
+                        <>
+                            {currentFollowings.followings?.map((elt,i) => (
+                                <div key={i}>
+                                    <Link href={`/profile/${elt.follower.pseudo}`}>
+                                        <a>
+                                            {elt.follower.pseudo}
+                                        </a>
+                                    </Link>
+                                </div>
+                            ))}
+                        </>
+                    ) : (
+                        <>
+                            Chargement en cours...
+                        </>
+                    )}
+                </>
+            )}
+
+            {currentShow == 'showFollowers' && (
+                <>
+                    {currentFollowers ? (
+                        <>
+                            {currentFollowers.followers?.map((elt,i) => (
+                                <div key={i}>
+                                    <Link href={`/profile/${elt.following.pseudo}`} onClick={() => handleRemoveAll()}>
+                                        <a>
+                                            {elt.following.pseudo}
+                                        </a>
+                                    </Link>
+                                </div>
+                            ))}
+                        </>
+                    ) : (
+                        <>
+                            Chargement en cours...
+                        </>
+                    )}
+                </>
             )}
 
             {currentOptions === true &&(
@@ -137,19 +270,55 @@ export default function Profile({profile}){
     )
 }
 
-export const getServerSideProps = async ({query}) => {
-    const currentUser = query.pseudo
+export const getServerSideProps = async (context) => {
+    const userResult = context.query.pseudo
+    const cookie = parseCookies(context.req)
+
     try{
         const prisma = new PrismaClient()
-
         const profile = await prisma.user.findUnique({
             where:{
-                pseudo: currentUser
+                pseudo: userResult
+            },
+            select:{
+                id:true,
+                pseudo:true,
+                description:true,
+                followings:true,
+                followers:true,
             }
         })
 
-        
-        
+        if(context.res){
+            if(cookie.user){
+                const parsedUser = JSON.parse(cookie.user)
+                if(parsedUser.pseudo !== userResult){
+                    const currentUserFollows = await prisma.user.findUnique({
+                        where: {
+                            pseudo: parsedUser.pseudo,
+                        },
+                        select:{
+                            followers:{
+                                select:{
+                                    following_id:true
+                                }
+                            },
+                            followings:{
+                                select:{
+                                    follower_id:true
+                                }
+                            },
+                        }
+                    })
+                    return{
+                        props:{
+                            profile,
+                            currentUserFollows
+                        }
+                    }
+                }
+            }
+        }
         return{
             props:{
                 profile
