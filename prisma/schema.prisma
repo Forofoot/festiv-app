@@ -46,6 +46,16 @@ model Festival {
   posts       Post[]
 }
 
+model Follow {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  follower_id Int
+  follower User? @relation("follower", fields: [follower_id], references: [id])
+  following_id Int
+  following User? @relation("following", fields: [following_id], references: [id])
+}
+
 model User {
   id          Int         @id @default(autoincrement())
   createdAt   DateTime    @default(now())
@@ -59,6 +69,8 @@ model User {
   avatarPublicId    String?
   password    String
   description String?
+  followings  Follow[] @relation("following")
+  followers   Follow[] @relation("follower")
   posts       Post[]
   comments    Comment[]
   likes       PostLiked[]

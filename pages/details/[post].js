@@ -84,11 +84,11 @@ export const getServerSideProps = async (context) => {
 
                     },
                     select:{
-                    likes:{
-                        select:{
-                        post_id:true
-                        }
-                    }
+                      likes:{
+                          select:{
+                          post_id:true
+                          }
+                      }
                     }
                 })
                 return{
