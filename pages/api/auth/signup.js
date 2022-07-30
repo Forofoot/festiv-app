@@ -46,7 +46,7 @@ export default async function handler(
             //Send success response
             res.status(201).json({
                     pseudo: newUser.pseudo,
-                    id: resultUser.id
+                    id: newUser.id
                 }
             );
             
