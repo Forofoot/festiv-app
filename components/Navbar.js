@@ -183,7 +183,7 @@ export default function Navbar() {
   }
   return (
     <>
-    {router.pathname !== '/auth/signin' && (
+    {router.pathname !== '/auth/' && (
       <HeaderStyle>
       <Toaster/>
       <nav>
