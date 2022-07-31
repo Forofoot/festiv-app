@@ -7,6 +7,93 @@ import toast from "react-hot-toast";
 import Head from "next/head";
 import { parseCookies } from "../../helpers";
 import Follow from "../../components/Follow";
+import styled from "styled-components";
+import Image from "next/dist/client/image";
+
+const ProfileStyle = styled.section`
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+    .modify{
+        position: absolute;
+        left: 40px;
+        top: 40px;
+    }
+    .profileContainer{
+        padding: 40px 25px;
+        max-width: 840px;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        width: 100%;
+        border-radius: 20px;
+        background-color: var(--white);
+        &.modifyContainer{
+            background: transparent;
+            box-shadow: none;
+            .preview{
+                object-fit: cover;
+            }
+        }
+        h1{
+            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+        h2{
+            color:var(--secondary);
+            margin-bottom: 10px;
+        }
+        .btnPrimary{
+            input{
+                display: none;
+            }
+        }
+        .infoBlock{
+            margin-bottom: 50px;
+            .accountName{
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 15px;
+                h2{
+                    margin-bottom: 0;
+                }
+                .btnPrimary{
+                    padding: 10px;
+                }
+            }
+            .profilePicture{
+                text-align: center;
+                border-radius: 50%;
+                overflow: hidden;
+                width: 217px;
+                height: 217px;
+                margin: auto;
+                margin-bottom: 20px;
+            }
+            .followStats{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 40px;
+                margin-bottom: 20px;
+                .following,
+                .follower{
+                    text-align: center;
+                    font-weight: bold;
+                    position: relative;
+                    width: 20%;
+                    cursor: pointer;
+                }
+                .separator{
+                    width: 2px;
+                    height: 25px;
+                    background:var(--primary);
+                }
+            }
+        }
+    }
+`
 
 export default function Profile({profile, currentUserFollows}){
     const [imageUploaded, setImageUploaded] = useState();
@@ -140,6 +227,7 @@ export default function Profile({profile, currentUserFollows}){
             console.log(e)
         }
     }
+    
     useEffect(() => {
         let followersList = []
         let followsList = []
@@ -164,107 +252,184 @@ export default function Profile({profile, currentUserFollows}){
 
     return(
         <>
-        <Head>
-            <title>Festiv-App | Page profile</title>
-            <meta
-                name="description"
-                content="Voici la page connexion de Festiv-app"
-            />
-        </Head>
-        {profile?.pseudo ? (
-            <>
-            <h1>Page profile de {profile?.pseudo}  ( Abonné : <p onClick={() =>handleShowFollowings()}>{profile?.followings.length}</p> || Abonnement : <p onClick={() =>handleShowFollowers()}>{profile?.followers.length})</p></h1>
-
-            {currentUserFollows && (
-                <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id}/>
-            )}
-            
-            {profile?.description &&(
-                <p>{profile.description}</p>
-            )}
-            
-            {profile?.pseudo  == currentUser?.pseudo && (
-                <p onClick={() => setCurrentOptions(!currentOptions)}>
-                    Modifier
-                </p>
-            )}
-
-            {currentShow == 'showFollowings' && (
-                <>
-                    {currentFollowings ? (
+            <Head>
+                <title>Festiv-App | Page profile</title>
+                <meta
+                    name="description"
+                    content="Voici la page connexion de Festiv-app"
+                />
+            </Head>
+            <ProfileStyle>
+                <div className={`profileContainer ${currentOptions ? 'modifyContainer' : ''}`}>
+                    {profile?.pseudo ? (
                         <>
-                            {currentFollowings.followings?.map((elt,i) => (
-                                <div key={i}>
-                                    <Link href={`/profile/${elt.follower.pseudo}`}>
-                                        <a>
-                                            {elt.follower.pseudo}
-                                        </a>
-                                    </Link>
+                            {currentOptions ? (
+                                <div className="infoBlock">
+                                    <h1>Modifier le profil</h1>
+
+                                    <div className="profilePicture">
+                                        {previewImage ? (
+                                            <img className="preview" src={previewImage} alt="Prévisualitation de l'image" width={217} height={217}/>
+                                        ) : (
+                                            <>
+                                            {profile.avatar ? (
+                                                <Image
+                                                    src={`${profile?.avatar}`}
+                                                    alt="Photo de profil"
+                                                    width={217}
+                                                    height={217}
+                                                    objectFit="cover"
+                                                />
+                                            ) : (
+                                                <Image
+                                                    src={'/profile/avatar.webp'}
+                                                    alt="Photo de profil"
+                                                    width={217}
+                                                    height={217}
+                                                    objectFit="cover"
+                                                />
+                                            )} 
+                                            </>
+                                        )}
+                                        
+                                    </div>
+
+                                    <form onSubmit={handleModifyInfos}>
+
+                                        <label className="btnPrimary">
+                                            <span>Changer de photo</span>
+                                            <input
+                                                onChange={handleChange}
+                                                accept=".jpg, .png, .gif, .jpeg"
+                                                type="file"
+                                                id='file-input'
+                                                name="avatar"
+                                            ></input>
+                                        </label>
+                                        {previewImage && (
+                                            <button className="btnPrimary" type='submit'><span>Modifier</span></button>
+                                        )}
+                                    </form>
+                                    Ajouter modal DIAAAAAAALOOOOOOOOOOOOOOOOOOOOOOOOG
+                                    <p onClick={(e) => handleDeleteUser(e)}>Supprimer le compte</p>
+                                </div>) : (
+                            <>        
+                            <div className="infoBlock">
+                                <h1>{profile?.pseudo} </h1>
+
+                                <div className="profilePicture">
+                                    {profile.avatar ? (
+                                        <Image
+                                            src={`${profile?.avatar}`}
+                                            alt="Photo de profil"
+                                            width={217}
+                                            height={217}
+                                            objectFit="cover"
+                                        />
+                                    ) : (
+                                        <Image
+                                            src={'/profile/avatar.webp'}
+                                            alt="Photo de profil"
+                                            width={217}
+                                            height={217}
+                                            objectFit="cover"
+                                        />
+                                    )} 
                                 </div>
-                            ))}
+
+                                {!currentUserFollows ? (
+                                    <>
+                                        <div className="followStats">
+                                            <div className="following">
+                                                <p onClick={() =>handleShowFollowings()}>{profile?.followings.length}</p>
+                                                <p>Abonnés</p>
+                                            </div>
+                                            <span className="separator"></span>
+                                            <div className="follower">
+                                                <p onClick={() =>handleShowFollowers()}>{profile?.followers.length}</p>
+                                                <p>Abonnements</p>
+                                            </div>
+                                        </div>
+                                    
+                                        
+
+                                        <h2>{profile.firstName} {profile.lastName}</h2>
+                                        {profile?.description ? (
+                                            <p>{profile.description}</p>
+                                        ) : (
+                                            <p>Aucune description</p>
+                                        )}
+                                    </>
+                                ) : (
+                                    <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id} profileDescription={profile?.description} profileFirstName={profile.firstName} profileLastName={profile.lastName} followersLength={profile?.followers.length}
+                                    followingsLength={profile?.followings.length}/>
+                                )}
+                            </div>
+
+                            {currentShow == 'showFollowings' && (
+                                <>
+                                    {currentFollowings ? (
+                                        <>
+                                            {currentFollowings.followings?.map((elt,i) => (
+                                                <div key={i}>
+                                                    <Link href={`/profile/${elt.follower.pseudo}`}>
+                                                        <a>
+                                                            {elt.follower.pseudo}
+                                                        </a>
+                                                    </Link>
+                                                </div>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                            Chargement en cours...
+                                        </>
+                                    )}
+                                </>
+                            )}
+
+                            {currentShow == 'showFollowers' && (
+                                <>
+                                    {currentFollowers ? (
+                                        <>
+                                            {currentFollowers.followers?.map((elt,i) => (
+                                                <div key={i}>
+                                                    <Link href={`/profile/${elt.following.pseudo}`} onClick={() => handleRemoveAll()}>
+                                                        <a>
+                                                            {elt.following.pseudo}
+                                                        </a>
+                                                    </Link>
+                                                </div>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                            Chargement en cours...
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </>
+                                
+                        )}
                         </>
                     ) : (
                         <>
-                            Chargement en cours...
+                            <h1>Aucun profil ne correspond</h1>
+                            <Link href='/'>
+                                <a>
+                                    Retour au menu
+                                </a>
+                            </Link>
                         </>
                     )}
-                </>
-            )}
-
-            {currentShow == 'showFollowers' && (
-                <>
-                    {currentFollowers ? (
-                        <>
-                            {currentFollowers.followers?.map((elt,i) => (
-                                <div key={i}>
-                                    <Link href={`/profile/${elt.following.pseudo}`} onClick={() => handleRemoveAll()}>
-                                        <a>
-                                            {elt.following.pseudo}
-                                        </a>
-                                    </Link>
-                                </div>
-                            ))}
-                        </>
-                    ) : (
-                        <>
-                            Chargement en cours...
-                        </>
-                    )}
-                </>
-            )}
-
-            {currentOptions === true &&(
-                <>
-                    <h2>Modifier le profil</h2>
-                    <form onSubmit={handleModifyInfos}>
-
-                        <label htmlFor='avatar'>Avatar</label>
-                        <input
-                            onChange={handleChange}
-                            accept=".jpg, .png, .gif, .jpeg"
-                            type="file"
-                            id='file-input'
-                            name="avatar"
-                        ></input>
-                        
-                        <button type='submit'>Modifier</button>
-                    </form>
-                    <p onClick={(e) => handleDeleteUser(e)}>Supprimer le compte</p>
-                    <img src={previewImage} width="500" height="500"/>
-                </>
-            )}
-            </>
-        ) : (
-            <>
-                <h1>Aucun profil ne correspond</h1>
-                <Link href='/'>
-                    <a>
-                        Retour au menu
-                    </a>
-                </Link>
-            </>
-        )}
-       
+                </div>
+                {profile?.pseudo  == currentUser?.pseudo && (
+                    <p className="btnPrimary modify" onClick={() => setCurrentOptions(!currentOptions)}>
+                        <span>Modifier</span>
+                    </p>
+                )}
+            </ProfileStyle>
         </>
     )
 }
@@ -282,7 +447,10 @@ export const getServerSideProps = async (context) => {
             select:{
                 id:true,
                 pseudo:true,
+                avatar:true,
                 description:true,
+                firstName:true,
+                lastName:true,
                 followings:true,
                 followers:true,
             }
