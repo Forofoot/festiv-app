@@ -9,16 +9,27 @@ import { parseCookies } from "../../helpers";
 import Follow from "../../components/Follow";
 import styled from "styled-components";
 import Image from "next/dist/client/image";
+import {device} from '../../styles/device.css'
 
 const ProfileStyle = styled.section`
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     padding: 40px;
     position: relative;
+    @media ${device.desktop}{
+        flex-direction:row;
+    }
     .modify{
-        position: absolute;
-        left: 40px;
-        top: 40px;
+        margin-top: 20px;
+        text-align: right;
+        @media ${device.desktop}{
+            position: absolute;
+            margin-top: 0;
+            left: 40px;
+            top: 40px;
+        }
     }
     .profileContainer{
         padding: 40px 25px;
