@@ -34,6 +34,7 @@ const AuthStyle = styled.section`
             border-radius: 20px;
             max-width: 650px;
             padding: 80px 120px;
+            overflow: hidden;
         }
 
         h1{
