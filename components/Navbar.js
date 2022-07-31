@@ -182,7 +182,9 @@ export default function Navbar() {
     toast.success('Déconnecté')
   }
   return (
-    <HeaderStyle>
+    <>
+    {router.pathname !== '/auth/signin' && (
+      <HeaderStyle>
       <Toaster/>
       <nav>
         <div className="navActions">
@@ -201,7 +203,7 @@ export default function Navbar() {
             </svg>
           </div>
           <ul className="navActionsDesktop">
-            <li>
+            <li onClick={() => setMenuActive(!menuActive)}>
               <Link href="/">
                 <a className={`${router.pathname == "/" ? "active" : ""}`}>
                   Feed
@@ -254,20 +256,13 @@ export default function Navbar() {
             ) : (
               <>
               <li onClick={() => setMenuActive(!menuActive)}>
-              <Link href='/auth/signin'>
-                <a className={`${router.pathname == "/auth/signin" ? "active" : ""}`}>
+              <Link href='/auth/'>
+                <a className={`${router.pathname == "/auth" ? "active" : ""}`}>
                   Se connecter
                 </a>
               </Link>
             </li>
             <li onClick={() => setMenuActive(!menuActive)}>
-              <Link href='/auth/signup'>
-                <a className={`${router.pathname == "/auth/signup" ? "active" : ""}`}>
-                  S&apos;inscrire
-                </a>
-              </Link>
-            </li>
-            <li conClick={() => setMenuActive(!menuActive)}>
               <Link href="/">
                 <a className={`navActionsMobile ${router.pathname == "/" ? "active" : ""}`}  >
                   Feed
@@ -278,6 +273,9 @@ export default function Navbar() {
             )}
         </ul>
       </nav>
-    </HeaderStyle>
+      </HeaderStyle>
+    )}
+    </>
+    
   )
 }

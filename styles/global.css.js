@@ -38,6 +38,26 @@ export default createGlobalStyle`
       display: inline-block;
     }
   }
+
+  label{
+    width: 100%;
+  }
+
+  input{
+    all: unset;
+    padding: 5px 0;
+    border-bottom: 2px solid var(--primary);
+    width: 100%;
+    margin-bottom: 10px;
+    transition: border .2s linear;
+    &::placeholder{
+      color: var(--grey);
+    }
+    &:focus{
+      border-color: var(--secondary);
+    }
+  }
+
   button,
   a{
     cursor: pointer;
@@ -60,7 +80,7 @@ export default createGlobalStyle`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 0px;
+    padding: 15px 0px;
     width: 210px;
     color: var(--white);
     background: #ffffff;
@@ -98,6 +118,7 @@ export default createGlobalStyle`
   :root{
     --primary: #000000;
     --secondary: #7620BB;
+    --grey: #c2c2c2;
     --white: #ffffff;
   }
 `
