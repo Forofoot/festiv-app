@@ -87,7 +87,6 @@ export default createGlobalStyle`
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     transition: all .3s ease;
-    font-weight: bold;
     &::before {
       content: '';
       position: absolute;
@@ -101,7 +100,7 @@ export default createGlobalStyle`
     span{
       position: relative;
       color: var(--white);
-      font-weight: 400;
+      font-weight: bold;
     }
     &:hover{
       &::before {
