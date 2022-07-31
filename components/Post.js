@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export default function Post({data, currentUserId, currentUserLikes}) {
     const [userLikes, setUserLikes] = useState([])
-  
+
     const router = useRouter()
     
     const handleAddComment = async(e,id) => {

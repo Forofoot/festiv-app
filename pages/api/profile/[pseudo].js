@@ -50,7 +50,8 @@ export default async function handler(
                     await prisma.$disconnect()
                     res.status(200).json({
                         pseudo: userModified.pseudo,
-                        avatar: userModified.avatar
+                        avatar: userModified.avatar,
+                        id: userModified.id
                     })
                 }else{
                     res.status(500).json({

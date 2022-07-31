@@ -45,9 +45,8 @@ export default function Home({post, currentUserLikes}) {
 
   useEffect(() => {
     setCurrentUser(cookies.user)
-  }, [cookies.user, currentUserLikes])
+  }, [cookies.user])
 
-  console.log(userLikes)
   return (
     <PostContainer>
       <Head>
@@ -59,7 +58,7 @@ export default function Home({post, currentUserLikes}) {
       </Head>
 
       <h1>Festiv-app</h1>
-      
+      {currentUser?.id}
       <h2>Bonjour {currentUser?.pseudo}</h2>
       <p>Nom des festivaliers</p>
       <p onClick={handleAddPost}>Ajouter un festival</p>
