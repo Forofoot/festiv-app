@@ -129,6 +129,12 @@ const HeaderStyle = styled.header`
       justify-content: flex-start;
       font-size: 1em;
     }
+    .btnLink{
+      font-size: 1.25rem;
+      @media ${device.mobile}{
+        font-size: 1rem;
+      }
+    }
     &.opened{
       right: 0;
     }
