@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 export default function Like({liked, currentPost, currentUserId, likesCount}) {
     const router = useRouter()
@@ -42,7 +42,6 @@ export default function Like({liked, currentPost, currentUserId, likesCount}) {
 
     return (
     <div onClick={(event) => handleLike(event, currentPost, currentUserId)}>
-            <Toaster/>
         
             {totalLikes}
             

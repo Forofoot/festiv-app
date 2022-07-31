@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { PrismaClient } from '@prisma/client'
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Head from "next/head";
 import { parseCookies } from "../../helpers";
 import Follow from "../../components/Follow";
@@ -173,7 +173,6 @@ export default function Profile({profile, currentUserFollows}){
         </Head>
         {profile?.pseudo ? (
             <>
-            <Toaster/>
             <h1>Page profile de {profile?.pseudo}  ( Abonné : <p onClick={() =>handleShowFollowings()}>{profile?.followings.length}</p> || Abonnement : <p onClick={() =>handleShowFollowers()}>{profile?.followers.length})</p></h1>
 
             {currentUserFollows && (

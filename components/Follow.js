@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 export default function Follow({currentUserId, following, follower, profileResult}) {
     const router = useRouter()
@@ -43,7 +43,6 @@ export default function Follow({currentUserId, following, follower, profileResul
 
     return (
     <div>
-            <Toaster/>
             
             <p onClick={(e) => follow(e)}>{isFollowed ? ('Se désabonner') : ('S\'abonner')} {isFollowing &&(<span>Vous suit</span>)}</p>
 

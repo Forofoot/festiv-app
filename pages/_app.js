@@ -5,6 +5,7 @@ import {useEffect} from 'react'
 import Router, { useRouter } from 'next/router'
 import { GTM_ID } from '../lib/gtm'
 import * as gtag from '../lib/gtag'
+import { Toaster } from "react-hot-toast";
 
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; 
@@ -41,6 +42,13 @@ return (
           }}
         />
         <Layout>
+          <Toaster
+                  toastOptions={{
+                      style: {
+                          shadow: '0px 4px 6px rgba(0, 0, 0, 0.25)',
+                      },
+                  }}
+              />
           <Component {...pageProps} />
         </Layout>
       </CookiesProvider>

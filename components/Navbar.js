@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { useCookies } from "react-cookie"
 import { useState, useEffect } from "react"
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import styled from "styled-components";
 import {device} from '../styles/device.css'
 import Image from 'next/image'
@@ -191,7 +191,6 @@ export default function Navbar() {
     <>
     {router.pathname !== '/auth' && (
       <HeaderStyle>
-      <Toaster/>
       <nav>
         <div className="navActions">
           <h1 onClick={() => setMenuActive(false)}>

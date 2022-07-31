@@ -1,5 +1,5 @@
 import { useState } from "react"
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -191,7 +191,7 @@ export default function Signin () {
 
     const [showPassword, setShowPassword] = useState(false)
 
-    const [authMethod, setAuthMethod] = useState('signup')
+    const [authMethod, setAuthMethod] = useState('signin')
 
     const handleConnectUser = async (e) =>{
         e.preventDefault()
@@ -287,7 +287,6 @@ export default function Signin () {
                     content="Voici la page connexion de Festiv-app"
                 />
             </Head>
-            <Toaster/>
             <Image
                 src={'/auth/bg-auth.webp'}
                 alt="Image de fond"
