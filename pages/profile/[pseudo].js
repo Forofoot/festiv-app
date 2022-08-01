@@ -11,6 +11,7 @@ import styled from "styled-components";
 import Image from "next/dist/client/image";
 import {device} from '../../styles/device.css'
 import Modal from "../../components/Modal";
+import Modify from "../../components/Modify"
 
 const ProfileStyle = styled.section`
     display: flex;
@@ -103,14 +104,80 @@ const ProfileStyle = styled.section`
                     background:var(--primary);
                 }
             }
+            .formImage{
+                margin-bottom: 50px;
+            }
+            .grid{
+                display: grid;
+                grid-gap: 20px;
+                grid-template-columns: repeat(1, 1fr);
+                grid-template-rows: repeat(1, 1fr);
+                margin-bottom: 115px;
+                @media ${device.mobile}{
+                    gap: 40px;
+                    grid-template-columns: repeat(2, 1fr);
+                    grid-template-rows: repeat(2, 1fr);
+                   .informationsBlock{
+                        grid-area: 1 / 1 / 3 / 2;
+                    } 
+                }
+                .modifyBlock{
+                    background-color: var(--white);
+                    border-radius: 20px;
+                    padding: 20px 20px 40px 20px;
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 25px;
+                    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+                    @media ${device.mobile}{
+                        padding: 30px 25px;
+                    }
+                    h2{
+                        text-transform: uppercase;
+                        color: var(--primary);
+                        font-size: 1rem;
+                        margin-bottom: 0;
+                    }
+                    .label{
+                        p{
+                            font-size: 0.875rem;
+                            color: var(--secondary);
+                            font-weight: bold;
+                        }
+                        span,
+                        .descriptionText{
+                            font-size: 0.725rem;
+                            color: var(--primary);
+                            font-weight: 400;
+                            margin-bottom: 0;
+                        }
+                        .descriptionText{
+                            margin-top: 5px;
+                        }
+                    }
+                    .modifyLabel{
+                        position: absolute;
+                        font-size: 0.725rem;
+                        bottom: 10px;
+                        right: 20px;
+                        color: var(--green);
+                        text-transform: uppercase;
+                        cursor: pointer;
+                        @media ${device.mobile}{
+                            top: 30px;
+                            right: 25px;
+                        }
+                    }
+                }
+            }
         }
     }
 `
 
 export default function Profile({profile, currentUserFollows}){
-    const [imageUploaded, setImageUploaded] = useState();
+    const [cookies] = useCookies(['user'])
     const [previewImage, setpreviewImage] = useState();
-    const [cookies, setCookie, removeCookie] = useCookies(['user'])
     const [currentUser, setCurrentUser] = useState(null)
     const [currentOptions, setCurrentOptions] = useState(null)
     const [currentShow, setCurrentShow] = useState(null)
@@ -122,67 +189,6 @@ export default function Profile({profile, currentUserFollows}){
 
     const [opened, setOpened] = useState(false)
     const router = useRouter()
-
-    const handleChange = (event) => {
-        setImageUploaded(event.target.files[0]);
-        setpreviewImage(URL.createObjectURL(event.target.files[0]))
-      };
-
-    const handleModifyInfos = async(e) =>{
-        e.preventDefault()
-        toast.loading('Chargement en cours...')
-        const formData = new FormData()
-        formData.append("image", imageUploaded)
-        const res = await fetch(`/api/profile/${profile?.pseudo}`, {
-            method: 'POST',
-            body: formData,
-        })
-        
-        if(res.ok){
-            const data = await res.json()
-            toast.remove()
-            setCookie("user", JSON.stringify(data), {
-                path: '/',
-                maxAge: 3600, // Expires after 1hr
-                sameSite: true,
-            })
-            toast.success('Profil modifié')
-            router.push(`/profile/${data.pseudo}`)
-            setCurrentOptions(null)
-        }else{
-            toast.remove()
-            toast.error('Erreur lors de la modification de vos infos')
-        }
-    }
-
-    const handleDeleteUser = async(e) => {
-        e.preventDefault()
-        try{
-            toast.loading('Suppression en cours...')
-            const res = await fetch('/api/profile/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    currentUser: profile?.id
-                }),
-            })
-
-            if(res.ok){
-                toast.remove()
-                toast.success('Compte supprimé')
-                setCurrentUser(null)
-                removeCookie('user',  {path: '/'})
-                router.push('/')
-            }else{
-                toast.remove()
-                toast.error('Erreur lors de la suppression de votre compte')
-            }
-        }catch(error){
-            console.log(error)
-        }
-    }
 
     const handleShowFollowings = async(e) =>{
         setCurrentShow('showFollowings')
@@ -273,61 +279,13 @@ export default function Profile({profile, currentUserFollows}){
                 />
             </Head>
             <Modal setOpened={setOpened} isopened={opened}/>
-            <p onClick={() => setOpened(true)}>Test modal</p>
             <ProfileStyle>
                 <div className={`profileContainer ${currentOptions ? 'modifyContainer' : ''}`}>
                     {profile?.pseudo ? (
                         <>
                             {currentOptions ? (
-                                <div className="infoBlock">
-                                    <h1>Modifier le profil</h1>
-
-                                    <div className="profilePicture">
-                                        {previewImage ? (
-                                            <img className="preview" src={previewImage} alt="Prévisualitation de l'image" width={217} height={217}/>
-                                        ) : (
-                                            <>
-                                            {profile.avatar ? (
-                                                <Image
-                                                    src={`${profile?.avatar}`}
-                                                    alt="Photo de profil"
-                                                    width={217}
-                                                    height={217}
-                                                    objectFit="cover"
-                                                />
-                                            ) : (
-                                                <Image
-                                                    src={'/profile/avatar.webp'}
-                                                    alt="Photo de profil"
-                                                    width={217}
-                                                    height={217}
-                                                    objectFit="cover"
-                                                />
-                                            )} 
-                                            </>
-                                        )}
-                                        
-                                    </div>
-
-                                    <form onSubmit={handleModifyInfos}>
-
-                                        <label className="btnPrimary">
-                                            <span>Changer de photo</span>
-                                            <input
-                                                onChange={handleChange}
-                                                accept=".jpg, .png, .gif, .jpeg"
-                                                type="file"
-                                                id='file-input'
-                                                name="avatar"
-                                            ></input>
-                                        </label>
-                                        {previewImage && (
-                                            <button className="btnPrimary" type='submit'><span>Modifier</span></button>
-                                        )}
-                                    </form>
-                                    Ajouter modal DIAAAAAAALOOOOOOOOOOOOOOOOOOOOOOOOG
-                                    <p onClick={(e) => handleDeleteUser(e)}>Supprimer le compte</p>
-                                </div>) : (
+                                <Modify previewImage={previewImage} setpreviewImage={setpreviewImage} profileAvatar={profile?.avatar} profilePseudo={profile?.pseudo} profileId={profile?.id} setCurrentUser={setCurrentUser} setOpened={setOpened} profileFirstName={profile?.firstName} profileLastName={profile?.lastName} profileEmail={profile?.email} profileDescription={profile?.description}/>
+                                ) : (
                             <>        
                             <div className="infoBlock">
                                 <h1>{profile?.pseudo} </h1>
@@ -462,6 +420,7 @@ export const getServerSideProps = async (context) => {
             select:{
                 id:true,
                 pseudo:true,
+                email:true,
                 avatar:true,
                 description:true,
                 firstName:true,
