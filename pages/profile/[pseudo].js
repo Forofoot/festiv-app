@@ -10,6 +10,7 @@ import Follow from "../../components/Follow";
 import styled from "styled-components";
 import Image from "next/dist/client/image";
 import {device} from '../../styles/device.css'
+import Modal from "../../components/Modal";
 
 const ProfileStyle = styled.section`
     display: flex;
@@ -26,7 +27,7 @@ const ProfileStyle = styled.section`
         text-align: right;
         @media ${device.desktop}{
             position: absolute;
-            margin-top: 0;
+            margin-top: 0 ;
             left: 40px;
             top: 40px;
         }
@@ -119,6 +120,7 @@ export default function Profile({profile, currentUserFollows}){
     const [userFollows, setUserFollows] = useState([])
     const [userFollowers, setUserFollowers] = useState([])
 
+    const [opened, setOpened] = useState(false)
     const router = useRouter()
 
     const handleChange = (event) => {
@@ -270,6 +272,8 @@ export default function Profile({profile, currentUserFollows}){
                     content="Voici la page connexion de Festiv-app"
                 />
             </Head>
+            <Modal setOpened={setOpened} isopened={opened}/>
+            <p onClick={() => setOpened(true)}>Test modal</p>
             <ProfileStyle>
                 <div className={`profileContainer ${currentOptions ? 'modifyContainer' : ''}`}>
                     {profile?.pseudo ? (
