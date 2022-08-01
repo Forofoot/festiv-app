@@ -120,5 +120,6 @@ export default createGlobalStyle`
     --secondary: #7620BB;
     --grey: #c2c2c2;
     --white: #ffffff;
+    --green: #29a544;
   }
 `
