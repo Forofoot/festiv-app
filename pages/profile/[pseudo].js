@@ -18,14 +18,17 @@ const ProfileStyle = styled.section`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 40px;
+    padding: 40px 20px;
     position: relative;
     @media ${device.desktop}{
         flex-direction:row;
+        padding: 40px;
     }
     .modify{
-        margin-top: 20px;
         text-align: right;
+        margin-bottom: 20px;
+        margin-left: auto;
+        margin-right: auto;
         @media ${device.desktop}{
             position: absolute;
             margin-top: 0 ;
@@ -43,6 +46,7 @@ const ProfileStyle = styled.section`
         &.modifyContainer{
             background: transparent;
             box-shadow: none;
+            padding: 0;
             .preview{
                 object-fit: cover;
             }
@@ -112,8 +116,9 @@ const ProfileStyle = styled.section`
                 grid-gap: 20px;
                 grid-template-columns: repeat(1, 1fr);
                 grid-template-rows: repeat(1, 1fr);
-                margin-bottom: 115px;
+                margin-bottom: 40px;
                 @media ${device.mobile}{
+                    margin-bottom: 115px;
                     gap: 40px;
                     grid-template-columns: repeat(2, 1fr);
                     grid-template-rows: repeat(2, 1fr);
@@ -183,6 +188,7 @@ export default function Profile({profile, currentUserFollows}){
     const [currentShow, setCurrentShow] = useState(null)
     const [currentFollowings, setCurrentFollowings] = useState([])
     const [currentFollowers, setCurrentFollowers] = useState([])
+    const [modalOptions, setModalOptions] = useState()
 
     const [userFollows, setUserFollows] = useState([])
     const [userFollowers, setUserFollowers] = useState([])
@@ -192,7 +198,6 @@ export default function Profile({profile, currentUserFollows}){
 
     const handleShowFollowings = async(e) =>{
         setCurrentShow('showFollowings')
-        console.log(currentFollowings)
         try{
             if(!currentFollowings.followings){
                 const res = await fetch('/api/profile/showFollowings', {
@@ -278,13 +283,18 @@ export default function Profile({profile, currentUserFollows}){
                     content="Voici la page connexion de Festiv-app"
                 />
             </Head>
-            <Modal setOpened={setOpened} isopened={opened}/>
+            <Modal profileDescription={profile?.description} profileId={profile?.id} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
             <ProfileStyle>
                 <div className={`profileContainer ${currentOptions ? 'modifyContainer' : ''}`}>
+                    {profile?.pseudo  == currentUser?.pseudo && (
+                        <p className="btnPrimary modify" onClick={() => setCurrentOptions(!currentOptions)}>
+                            <span>{currentOptions ? 'Retour' : 'Modifier'}</span>
+                        </p>
+                    )}
                     {profile?.pseudo ? (
                         <>
                             {currentOptions ? (
-                                <Modify previewImage={previewImage} setpreviewImage={setpreviewImage} profileAvatar={profile?.avatar} profilePseudo={profile?.pseudo} profileId={profile?.id} setCurrentUser={setCurrentUser} setOpened={setOpened} profileFirstName={profile?.firstName} profileLastName={profile?.lastName} profileEmail={profile?.email} profileDescription={profile?.description}/>
+                                <Modify previewImage={previewImage} setpreviewImage={setpreviewImage} profileAvatar={profile?.avatar} profilePseudo={profile?.pseudo} profileId={profile?.id} setCurrentUser={setCurrentUser} setOpened={setOpened} profileFirstName={profile?.firstName} profileLastName={profile?.lastName} profileEmail={profile?.email} profileDescription={profile?.description} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
                                 ) : (
                             <>        
                             <div className="infoBlock">
@@ -323,8 +333,6 @@ export default function Profile({profile, currentUserFollows}){
                                                 <p>Abonnements</p>
                                             </div>
                                         </div>
-                                    
-                                        
 
                                         <h2>{profile.firstName} {profile.lastName}</h2>
                                         {profile?.description ? (
@@ -397,11 +405,6 @@ export default function Profile({profile, currentUserFollows}){
                         </>
                     )}
                 </div>
-                {profile?.pseudo  == currentUser?.pseudo && (
-                    <p className="btnPrimary modify" onClick={() => setCurrentOptions(!currentOptions)}>
-                        <span>Modifier</span>
-                    </p>
-                )}
             </ProfileStyle>
         </>
     )

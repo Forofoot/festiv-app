@@ -72,6 +72,74 @@ export default createGlobalStyle`
     gap: 15px;
   }
 
+  textarea{
+    all: unset;
+    border: 1px solid var(--secondary);
+    border-radius: 10px;
+  }
+
+  .showPassword{
+      position: relative;
+      width: 100%;
+      label{
+          cursor: pointer;
+          width: auto;
+      }
+                          
+      .toggle {
+          isolation: isolate;
+          position: absolute;
+          right: 0;
+          top: 0;
+          height: 20px;
+          width: 40px;
+          border-radius: 15px;
+          overflow: hidden;
+          box-shadow:
+              -8px -4px 8px 0px #ffffff,
+              8px 4px 12px 0px #d1d9e6,
+              4px 4px 4px 0px #d1d9e6 inset,
+              -4px -4px 4px 0px #ffffff inset;
+      }
+
+      .toggle-state {
+          display: none;
+      }
+
+      .indicator {
+          height: 100%;
+          width: 200%;
+          background: linear-gradient(90.32deg, #6300B1 8.05%, #002762 82.81%);
+          border-radius: 15px;
+          transform: translate3d(-75%, 0, 0);
+          transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
+          box-shadow:
+              -8px -4px 8px 0px #ffffff,
+              8px 4px 12px 0px #d1d9e6;
+      }
+
+      .toggle-state:checked ~ .indicator {
+          transform: translate3d(25%, 0, 0);
+      }
+  }
+
+  .btnSecondary{
+    all: unset;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 0px;
+    width: 210px;
+    color: var(--red);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    transition: all .3s ease;
+    border: 1px solid var(--red);
+    margin: auto;
+  }
   .btnPrimary{
     all: unset;
     position: relative;
@@ -119,7 +187,9 @@ export default createGlobalStyle`
     --primary: #000000;
     --secondary: #7620BB;
     --grey: #c2c2c2;
+    --greyDark: #848484;
     --white: #ffffff;
     --green: #29a544;
+    --red:#FF0000; 
   }
 `
