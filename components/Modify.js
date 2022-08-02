@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { useCookies } from 'react-cookie';
 import Image from 'next/image';
 
-export default function Modify({profileAvatar, previewImage, profilePseudo, profileId, profileFirstName, profileLastName, profileEmail, profileDescription, setCurrentUser, setpreviewImage, setOpened}) {
+export default function Modify({profileAvatar, previewImage, profilePseudo, profileId, profileFirstName, profileLastName, profileEmail, profileDescription, setCurrentUser, setpreviewImage, setOpened, setModalOptions, modalOptions}) {
     const router = useRouter()
     
     const [imageUploaded, setImageUploaded] = useState();
@@ -139,7 +139,7 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
                     </div>
                 </div>
                 <div className='descriptionBlock modifyBlock'>
-                    <p className='modifyLabel' onClick={() => setOpened(true)}>Modifier</p>
+                    <p className='modifyLabel' onClick={() => {setOpened(true), setModalOptions('description')}}>Modifier</p>
                     <h2>Changer description</h2>
                     <div className='label'>
                         <p>Description</p>
@@ -148,7 +148,7 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
 
                 </div>
                 <div className='passwordBlock modifyBlock'>
-                    <p className='modifyLabel' onClick={() => setOpened(true)}>Modifier</p>
+                    <p className='modifyLabel' onClick={() => {setOpened(true), setModalOptions('password')}}>Modifier</p>
                     <h2>Changer mot de passe</h2>
                     <div className='label'>
                         <p>Mot de passe</p>
@@ -156,7 +156,7 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
                     </div>
                 </div>
             </div>
-            <p onClick={(e) => handleDeleteUser(e)}>Supprimer le compte</p>
+            <p className='btnSecondary' onClick={(e) => handleDeleteUser(e)}>Supprimer le compte</p>
         </div>
   )
 }

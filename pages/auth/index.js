@@ -107,49 +107,6 @@ const AuthStyle = styled.section`
                 display: flex;
                 flex-direction: column;
                 gap: 15px;
-                .showPassword{
-                    position: relative;
-                    label{
-                        cursor: pointer;
-                        width: auto;
-                    }
-                                        
-                    .toggle {
-                        isolation: isolate;
-                        position: absolute;
-                        right: 0;
-                        top: 0;
-                        height: 20px;
-                        width: 40px;
-                        border-radius: 15px;
-                        overflow: hidden;
-                        box-shadow:
-                            -8px -4px 8px 0px #ffffff,
-                            8px 4px 12px 0px #d1d9e6,
-                            4px 4px 4px 0px #d1d9e6 inset,
-                            -4px -4px 4px 0px #ffffff inset;
-                    }
-
-                    .toggle-state {
-                        display: none;
-                    }
-
-                    .indicator {
-                        height: 100%;
-                        width: 200%;
-                        background: linear-gradient(90.32deg, #6300B1 8.05%, #002762 82.81%);
-                        border-radius: 15px;
-                        transform: translate3d(-75%, 0, 0);
-                        transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
-                        box-shadow:
-                            -8px -4px 8px 0px #ffffff,
-                            8px 4px 12px 0px #d1d9e6;
-                    }
-
-                    .toggle-state:checked ~ .indicator {
-                        transform: translate3d(25%, 0, 0);
-                    }
-                }
             }
             button{
                 margin-top: auto;
@@ -220,6 +177,7 @@ export default function Signin () {
                         path: '/',
                         maxAge: 3600, // Expires after 1hr
                         sameSite: true,
+                        secure: true
                     })
                     toast.remove()
                     toast.success('Connecté')
@@ -266,6 +224,7 @@ export default function Signin () {
                         path: '/',
                         maxAge: 3600, // Expires after 1hr
                         sameSite: true,
+                        secure: true
                     })
                     router.push('/')
                     toast.success('Connecté')

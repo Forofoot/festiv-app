@@ -1,5 +1,8 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
+import { device } from '../styles/device.css'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/dist/client/router'
 
 const ModalStyle = styled.div`
     .overlay{
@@ -21,8 +24,8 @@ const ModalStyle = styled.div`
         }
     }
     .modal{
-        width: 500px;
-        height: 500px;
+        width: 320px;
+        min-height: 250px;
         background:#fff;
         border-radius: 20px;
         position: absolute;
@@ -35,6 +38,12 @@ const ModalStyle = styled.div`
         padding: 40px;
         color: #000;
         z-index: 100;
+        display: flex;
+        align-items: center;
+        @media ${device.mobile}{
+            width: 390px;
+            min-height: 250px;
+        }
         &.active{
             opacity: 1;
             visibility: visible;
@@ -43,14 +52,121 @@ const ModalStyle = styled.div`
         .cross{
             position: absolute;
             right: 25px;
-            top: 15px;
+            top: 10px;
             font-size: 2em;
             cursor: pointer;
+        }
+        form{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            textarea{
+                max-width: 100%;
+                max-height: 100%;
+                min-width: 220px;
+                min-height: 110px;
+                padding: 10px 20px;
+                color: var(--primary);
+                font-size: 0.875rem;
+                @media ${device.mobile}{
+                    min-width: 270px;
+                    min-height: 110px;
+                }
+            }
+            label{
+                font-size: 1rem;
+                font-weight: bold;
+                color: var(--secondary);
+            }
+            .limitedTo{
+                width: 100%;
+                font-size: 0.875rem;
+                color: var(--greyDark);
+                text-align: right;
+            }
         }
     }
 `
 
-function Modal({setOpened, isopened}) {
+function Modal({setOpened, isopened, profileDescription,  profileId, modalOptions}) {
+    const [showPassword, setShowPassword] = useState(false)
+    const router = useRouter()
+    const [inputedUser, setInputedUser] = useState({
+        description: profileDescription,
+        newPassword: '',
+        confirmPassword: ''
+    }) 
+
+    const handleChangePassword = async(e) =>{
+        e.preventDefault()
+        try{
+            toast.loading('Chargement en cours')
+            console.log(inputedUser.newPassword)
+            console.log(inputedUser.confirmPassword)
+            if(inputedUser.newPassword !== inputedUser.confirmPassword){
+                toast.remove()
+                toast.error('Mots de passes non identiques')
+            }else{
+                if(!inputedUser.newPassword || !inputedUser.confirmPassword){
+                    toast.remove()
+                    toast.error('Les champs ne peuvent être vide')
+                }else{
+                    const res = await fetch('/api/profile/changePassword', {
+                        method:'POST',
+                        headers:{
+                            'Content-Type':  'application/json'
+                        },
+                        body:JSON.stringify({
+                            confirmPassword: inputedUser.confirmPassword,
+                            newPassword: inputedUser.newPassword,
+                            profile_id: profileId
+                        })
+                    })
+        
+                    if(res.ok){
+                        toast.remove()
+                        toast.success('Mot de passe changé')
+                        router.replace(router.asPath)
+                        setOpened(null)
+                    }else{
+                        toast.error('Erreur')
+                    }
+                }
+            }
+        }catch(e){
+            console.log(e)
+        }
+    }
+
+    const handleChangeDescription = async(e) =>{
+        e.preventDefault()
+        try{
+            toast.loading('Chargement en cours ...')
+            const res = await fetch('/api/profile/changeDescription', {
+                method:'POST',
+                headers:{
+                    'Content-Type':  'application/json'
+                },
+                body:JSON.stringify({
+                    description: inputedUser.description,
+                    profile_id: profileId
+                })
+            })
+
+            if(res.ok){
+                toast.remove()
+                toast.success('Description changée')
+                router.replace(router.asPath)
+                setOpened(null)
+            }else{
+                toast.error('Erreur')
+            }
+        }catch(e){
+            console.log(e)
+        }
+    }
   return (
     <ModalStyle>
         <div className={`overlay ${isopened ? ('active') : ('')}`} onClick={() => setOpened(false)}></div>
@@ -58,7 +174,37 @@ function Modal({setOpened, isopened}) {
             <div className='cross' onClick={() => setOpened(false)}>
                 x
             </div>
-            I am a Modal
+            {modalOptions === 'description' && 
+                <form onSubmit={handleChangeDescription}>
+                    <label>Description</label>   
+                    <textarea value={inputedUser.description || ''} onChange={(e) => setInputedUser({ ...inputedUser, description:e.target.value })}></textarea> 
+                    <p className='limitedTo'>Limité à 100 caractères</p>
+                    <button className="btnPrimary">
+                        <span>Modifier</span>
+                    </button>
+                </form>
+            }
+
+            {modalOptions === 'password' && 
+                <form onSubmit={handleChangePassword}>
+                    <label>Nouveau mot de passe</label>
+                    <input type={`${showPassword ? ('text') : ('password')}`} placeholder='Mot de passe' value={inputedUser.newPassword || ''} minLength={8} onChange={(e) => setInputedUser({ ...inputedUser, newPassword:e.target.value })}/>
+                    <label>Confirmation de mot de passe</label>
+                    <div className="showPassword">
+                        <input type={`${showPassword ? ('text') : ('password')}`} placeholder='Mot de passe' value={inputedUser.confirmPassword || ''} minLength={8} onChange={(e) => setInputedUser({ ...inputedUser, confirmPassword:e.target.value })}/>
+                        <label>
+                            <div className="toggle">
+                                <input className="toggle-state" type="checkbox" name="check" value="check" onClick={() => setShowPassword(!showPassword)} />
+                                <div className="indicator"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <button className="btnPrimary">
+                        <span>Modifier</span>
+                    </button>
+                </form>
+            }
+            
         </div>
     </ModalStyle>
   )
