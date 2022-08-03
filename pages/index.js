@@ -10,14 +10,29 @@ import { device } from '../styles/device.css'
 
 const PostContainer = styled.section`
   .postContainer{
-    padding: 40px 20px;
+    padding: 40px 20px 80px 20px;
     display: flex;
     flex-direction: column;
     gap: 30px;
+    position: relative;
     justify-content: center;
     align-items: center;
     @media ${device.laptop}{
       padding: 140px 40px 40px 40px;
+    }
+    .btnPrimary{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 10px;
+      z-index: 10;
+      @media ${device.laptop}{
+        position: absolute;
+        left: 40px;
+        top: 140px;
+        bottom: auto;
+        transform: none;
+      }
     }
   }
 `
@@ -59,6 +74,7 @@ export default function Home({post, currentUserLikes}) {
         />
       </Head>
       <div className='postContainer'>
+        <p className='btnPrimary'><span>Ajouter un post</span></p>
         {post.map((elt, i) =>(
             <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
         ))}
