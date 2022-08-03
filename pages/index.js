@@ -4,19 +4,21 @@ import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 import { useRouter } from 'next/dist/client/router'
 import styled from 'styled-components'
-import Like from '../components/Like'
 import { parseCookies } from "../helpers"
 import Post from '../components/Post'
+import { device } from '../styles/device.css'
 
 const PostContainer = styled.section`
   .postContainer{
+    padding: 40px 20px;
     display: flex;
-  flex-direction: column;
-  gap: 30px;
-  align-items: center;
-  }
-  .post{
-    
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    @media ${device.laptop}{
+      padding: 140px 40px 40px 40px;
+    }
   }
 `
 export default function Home({post, currentUserLikes}) {
@@ -56,17 +58,9 @@ export default function Home({post, currentUserLikes}) {
             content="Festiv-App"
         />
       </Head>
-
-      <h1>Festiv-app</h1>
-      {currentUser?.id}
-      <h2>Bonjour {currentUser?.pseudo}</h2>
-      <p>Nom des festivaliers</p>
-      <p onClick={handleAddPost}>Ajouter un festival</p>
       <div className='postContainer'>
         {post.map((elt, i) =>(
-          <div key={i}>
-            <Post data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
-          </div>
+            <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
         ))}
       </div>
     </PostContainer>
@@ -94,11 +88,17 @@ export async function getServerSideProps({req, res}){
       comments:{
         select:{
           content: true,
+          updatedAt:true,
           user:{
             select:{
-              pseudo:true
+              pseudo:true,
+              avatar:true
             }
           }
+        },
+        take:2,
+        orderBy:{
+          updatedAt:'desc'
         }
       },
       likes:{
