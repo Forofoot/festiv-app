@@ -3,7 +3,23 @@ import { PrismaClient } from '@prisma/client'
 import { parseCookies } from '../../helpers'
 import Post from '../../components/Post'
 import { useCookies } from 'react-cookie'
+import { device } from '../../styles/device.css'
+import styled from 'styled-components'
+import Head from 'next/dist/shared/lib/head'
 
+const PostContainer = styled.section`
+.postContainer{
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  @media ${device.laptop}{
+    padding: 140px 40px 40px 40px;
+  }
+}
+`
 export default function PostDetail({findPost, currentUserLikes}) {
     const [currentUser, setCurrentUser] = useState(null)
     const [cookies] = useCookies(['user'])
@@ -23,9 +39,18 @@ export default function PostDetail({findPost, currentUserLikes}) {
           setUserLikes(likesList)
     }, [cookies.user, currentUserLikes])
   return (
-    <div>
-        <Post data={findPost} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>  
-    </div>
+    <PostContainer>
+      <Head>
+        <title>Festiv-App | Page détails</title>
+        <meta
+            name="description"
+            content="Festiv-App"
+        />
+      </Head>
+      <div className='postContainer'>
+        <Post data={findPost} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
+      </div>
+    </PostContainer>
   )
 }
 
@@ -57,11 +82,16 @@ export const getServerSideProps = async (context) => {
                 comments:{
                   select:{
                     content: true,
+                    updatedAt:true,
                     user:{
                       select:{
-                        pseudo:true
+                        pseudo:true,
+                        avatar:true
                       }
                     }
+                  },
+                  orderBy:{
+                    updatedAt:'desc'
                   }
                 },
                 likes:{

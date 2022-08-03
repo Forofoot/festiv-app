@@ -67,9 +67,9 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
     }
 
     return (
-    <LikesStyle onClick={(event) => handleLike(event, currentPost, currentUserId)}>
+    <LikesStyle>
             <div className='likesActions'>
-                <p>{!isLiked ? ('cest pas like') : ('cest like')}</p>
+                <p onClick={(event) => handleLike(event, currentPost, currentUserId)}>{!isLiked ? ('cest pas like') : ('cest like')}</p>
                 
                 <p onClick={(event) => handleShare(event, currentPost, currentPostContent, currentPostDescription)}>Partager</p>
             </div>

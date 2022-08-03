@@ -10,17 +10,23 @@ import { device } from '../styles/device.css'
 
 const PostStyle = styled.div`
   display: flex;
-  overflow: hidden;
-  width: 100%;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  position: relative;
+  align-items: center;
   flex-direction: column;
-  @media ${device.laptop}{
-    max-width: 840px;
-    height: 450px;
-    flex-direction: row;
+  width: 100%;
+  .post{
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    background-color: var(--white);
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    position: relative;
+    flex-direction: column;
+    @media ${device.laptop}{
+      max-width: 840px;
+      height: 450px;
+      flex-direction: row;
+    }
   }
   .postImage{
     position: relative;
@@ -46,6 +52,9 @@ const PostStyle = styled.div`
       min-width: 50%;
       min-height: auto;
     }
+    &.details{
+      min-height: 250px;
+    }
     .postedUser{
       display: flex;
       align-items: center;
@@ -63,6 +72,12 @@ const PostStyle = styled.div`
     .actionBtn{
       display: flex;
       align-items: center;
+      &.details{
+        position: absolute;
+        bottom: 20px;
+        width: calc(100% - 50px);
+        left: 25px;
+      }
     }
     .comments{
       
@@ -78,42 +93,6 @@ const PostStyle = styled.div`
         display: flex;
         flex-direction: column;
         gap: 20px;
-        .userComment{
-          display: flex;
-          gap: 15px;
-          align-items: flex-start;
-          .userCommentsImg{
-            height: 35px;
-            width: 35px;
-            border-radius: 50%;
-            overflow: hidden;
-          }
-          .userCommentContent{
-            div{
-              display: flex;
-              gap: 10px;
-              margin-bottom: 5px;
-              span{
-                font-weight: bold;
-              }
-            }
-            .date{
-              font-weight: 400;
-              font-size: 0.725rem;
-              color: var(--greyDark);
-            }
-            .userCommentText{
-              max-width: 220px;
-              width: 100%;
-              p{
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                width: 100%;
-              }
-            }
-          }
-        }
       }
     }
     .seeDetails{
@@ -124,6 +103,103 @@ const PostStyle = styled.div`
         color: var(--secondary);
       }
   }
+  .commentSection{
+    display: flex;
+    width: 100%;
+    position: relative;
+    flex-direction: column;
+    margin-top: 70px;
+    @media ${device.laptop}{
+      max-width: 840px;
+    }
+    h2{
+      text-align: left;
+      width: 100%;
+      margin-bottom: 35px;
+    }
+    .addCommentSection{
+      form{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        input{
+          max-width: 280px;
+        }
+        .btnSecondary{
+          margin: 0;
+          border-color: var(--primary);
+          color: var(--primary);
+        }
+      }
+    }
+    .displayComment,.addCommentSection{
+      width: 100%;
+      background-color: var(--white);
+      padding: 15px 30px;
+      border-radius: 20px;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      margin-bottom: 25px;
+    }
+
+    .displayComment{
+      .userComments{
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        .userCommentContent{
+          width: 80%;
+          .userCommentText
+          {
+            max-width: unset;
+            p{
+              width: 100%;
+              word-wrap: break-word;
+              text-overflow: initial;
+              white-space: normal;
+              max-width: unset;
+            } 
+          }
+        }
+      }
+    }
+  }
+  .userComment{
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+      .userCommentsImg{
+        height: 35px;
+        width: 35px;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+      .userCommentContent{
+        div{
+          display: flex;
+          gap: 10px;
+          margin-bottom: 5px;
+          span{
+            font-weight: bold;
+          }
+        }
+        .date{
+          font-weight: 400;
+          font-size: 0.725rem;
+          color: var(--greyDark);
+        }
+        .userCommentText{
+          max-width: 220px;
+          width: 100%;
+          p{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+          }
+        }
+      }
+    }
 `
 
 export default function Post({data, currentUserId, currentUserLikes}) {
@@ -178,7 +254,8 @@ export default function Post({data, currentUserId, currentUserLikes}) {
         setUserLikes(likesList)
       }, [currentUserLikes])
     return (
-        <PostStyle className='post'>
+        <PostStyle>
+          <div className='post'>
             <div className='postImage'>
               <Image
                 src={'/placeholder.webp'}
@@ -187,7 +264,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                 objectFit='cover'
               />
             </div>
-            <div className='postDetails'>
+            <div className={`postDetails ${router.pathname === "/" ? ('') : ('details')}`}>
               <div className='postedUser'>
                 <div>
                   <Image
@@ -207,12 +284,14 @@ export default function Post({data, currentUserId, currentUserLikes}) {
               </div>
               <p className='description'>{data.description}</p>
 
-              <div className='actionBtn'>
+              <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
                   <Like currentPost={data.id} likesCount={data.likes.length} currentPostContent={data.content} currentPostDescription={data.description} currentUserId={currentUserId} liked={userLikes.includes(data.id) ? true : false}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}
-              <div className='comments'>
+              {router.pathname === "/" && (
+                <>
+                <div className='comments'>
                 <p className='commentHead'>Commentaires</p>
                 <div className='userComments'>
                 {data.comments?.map((com,index) => (
@@ -250,16 +329,69 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                 ))}
                 </div>
               </div>
+              <Link href={`/details/${data.id}`}><a className='seeDetails'>Voir les détails</a></Link>
+              </>
+              )}
               
               {/*<p onClick={() => handleDeletePost(data.id)}>Supprimer</p>*/}
-
-              {/*<p>Ajouter un commentaire : </p>
-              <form onSubmit={(event) => handleAddComment(event, data.id)}>
-                  <input type="text" placeholder='Commentaire' name='comment'/>
-              </form>*/}
-
-              <Link href={`/details/${data.id}`}><a className='seeDetails'>Voir les détails</a></Link>
             </div>
+          </div>
+
+            
+            
+              
+          {router.pathname === `/details/[post]` && (
+            <div className='commentSection'>
+              <h2>Commentaires</h2>
+              <div className='addCommentSection'>
+                <form onSubmit={(event) => handleAddComment(event, data.id)}>
+                  <input type="text" placeholder='Commentaire' name='comment'/>
+                  <button className='btnSecondary'>
+                    <span>Ajouter</span>
+                  </button> 
+                </form>
+              </div>
+              <div className='displayComment'>
+                <div className='comments'>
+                  <div className='userComments'>
+                  {data.comments?.map((com,index) => (
+                      <div className='userComment' key={index}>
+                        <div className='userCommentsImg'>
+                        {com.user.avatar ? (
+                            <Image
+                              src={com?.user.avatar}
+                              alt={`Photo de ${com?.user.pseudo}`}
+                              width={35}
+                              height={35}
+                            />
+                          ) : (
+                            <Image
+                              src={'/profile/avatar.webp'}
+                              alt="Avatar"
+                              width={35}
+                              height={35}
+                              objectFit='cover'
+                            />
+                          )}
+                        </div>
+                        <div className='userCommentContent'>
+                          <div>
+                            <span>{com.user.pseudo}</span>
+                            <div className='userCommentText'>
+                              <p>
+                                {com.content}
+                              </p>
+                            </div>
+                          </div>
+                          <span className='date'><Moment locale="fr" date={com.updatedAt} fromNow /></span>
+                        </div>
+                      </div>
+                  ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </PostStyle>
   )
 }
