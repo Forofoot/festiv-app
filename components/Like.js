@@ -1,8 +1,24 @@
 import React, {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
+import styled from 'styled-components'
 
-export default function Like({liked, currentPost, currentUserId, likesCount}) {
+const LikesStyle = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    .totalLikes{
+        font-weight: bold;
+    }
+    .likesActions{
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+`
+
+export default function Like({liked, currentPost, currentUserId, likesCount, currentPostDescription, currentPostContent}) {
     const router = useRouter()
     const [isLiked, setIsLiked] = useState(null)
     const [totalLikes, setTotalLikes] = useState(likesCount)
@@ -40,14 +56,25 @@ export default function Like({liked, currentPost, currentUserId, likesCount}) {
         }
     }
 
+    
+    const handleShare = (e,id, title, description) =>{
+        e.preventDefault()
+        navigator.share({
+            title: title,
+            text: description,
+            url: '/details/'+id
+        })
+    }
+
     return (
-    <div onClick={(event) => handleLike(event, currentPost, currentUserId)}>
-        
-            {totalLikes}
+    <LikesStyle onClick={(event) => handleLike(event, currentPost, currentUserId)}>
+            <div className='likesActions'>
+                <p>{!isLiked ? ('cest pas like') : ('cest like')}</p>
+                
+                <p onClick={(event) => handleShare(event, currentPost, currentPostContent, currentPostDescription)}>Partager</p>
+            </div>
             
-            <p>{!isLiked ? ('cest pas like') : ('cest like')}</p>
-            
-        
-    </div>
+            <span className='totalLikes'>{totalLikes} {totalLikes === 1 || totalLikes === 0 ? ('j\'aime') : ('j\'aimes')}</span>
+    </LikesStyle>
   )
 }
