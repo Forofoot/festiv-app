@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import { device } from '../styles/device.css'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/dist/client/router'
+import { useCookies } from 'react-cookie'
 
 const ModalStyle = styled.div`
     .overlay{
@@ -99,7 +100,7 @@ const ModalStyle = styled.div`
     }
 `
 
-function Modal({setOpened, isopened, profileDescription,  profileId, modalOptions, festival}) {
+function Modal({setOpened, isopened, profileDescription,  profileId, modalOptions, festival, setPosts}) {
     const [showPassword, setShowPassword] = useState(false)
     const router = useRouter()
     const [inputedUser, setInputedUser] = useState({
@@ -111,6 +112,7 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
     }) 
     const [imageUploaded, setImageUploaded] = useState();
     const [previewImage, setpreviewImage] = useState();
+    const [cookie] = useCookies(['user'])
 
     const handleChange = (event) => {
         setImageUploaded(event.target.files[0]);
@@ -132,9 +134,15 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
             method: 'POST',
             body: formData,
         })
+        const data = await res.json()
+
         if(res.ok){
-          router.replace(router.asPath) 
-          setOpened(null)
+            setPosts(prevState => [{id:data.id, content:data.content, image:data.image, user:{
+                avatar: cookie.user?.avatar, pseudo: cookie.user?.pseudo
+            }, festival:{
+                title: inputedUser.festival
+            }}, ...prevState])
+            setOpened(null)
         }
       }
 

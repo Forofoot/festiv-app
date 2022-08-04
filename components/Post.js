@@ -225,34 +225,6 @@ export default function Post({data, currentUserId, currentUserLikes}) {
         }
     }
 
-      
-
-    const handleDeletePost = async(id) => {
-        const res = await fetch(`/api/post/deletePost`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            id:id
-        })
-        })
-        if(res.ok){
-            router.replace(router.asPath)
-        }
-    }
-
-      useEffect(() => {
-        let likesList = []
-    
-        if(currentUserLikes){
-          currentUserLikes.map((elt,i) => {
-            likesList.push(elt.post_id)
-          })
-        }
-        
-        setUserLikes(likesList)
-      }, [currentUserLikes])
     return (
         <PostStyle>
           <div className='post'>
@@ -277,7 +249,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
             <div className={`postDetails ${router.pathname === "/" ? ('') : ('details')}`}>
               <div className='postedUser'>
                 <div>
-                  {data.user.avatar ? (
+                  {data.user?.avatar ? (
                     <Image
                       src={`${data.user.avatar}`}
                       alt='Photo de profile'
@@ -304,7 +276,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
               <p className='description'>{data.content}</p>
 
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
-                  <Like currentPost={data.id} likesCount={data.likes.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={userLikes.includes(data.id) ? true : false}/>
+                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes.some((like) => like.post_id == data.id)}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}
@@ -316,7 +288,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                 {data.comments?.map((com,index) => (
                     <div className='userComment' key={index}>
                       <div className='userCommentsImg'>
-                      {com.user.avatar ? (
+                      {com.user?.avatar ? (
                           <Image
                             src={com?.user.avatar}
                             alt={`Photo de ${com?.user.pseudo}`}
@@ -335,14 +307,14 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                       </div>
                       <div className='userCommentContent'>
                         <div>
-                          <span>{com.user.pseudo}</span>
+                          <span>{com.user?.pseudo}</span>
                           <div className='userCommentText'>
                             <p>
-                              {com.content}
+                              {com?.content}
                             </p>
                           </div>
                         </div>
-                        <span className='date'><Moment locale="fr" date={com.updatedAt} fromNow /></span>
+                        <span className='date'><Moment locale="fr" date={com?.updatedAt} fromNow /></span>
                       </div>
                     </div>
                 ))}
