@@ -18,3 +18,16 @@ export function uploadAvatar(imageUploaded) {
     );
   });
 }
+
+export function uploadPost(imageUploaded) {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(
+      imageUploaded,
+      { crop: "fill", folder: 'post'},
+      (err, res) => {
+        if (err) reject(err);
+        resolve(res);
+      }
+    );
+  });
+}

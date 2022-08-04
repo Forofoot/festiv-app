@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { parseCookies } from "../helpers"
 import Post from '../components/Post'
 import { device } from '../styles/device.css'
+import Modal from '../components/Modal'
 
 const PostContainer = styled.section`
   .postContainer{
@@ -25,7 +26,7 @@ const PostContainer = styled.section`
       left: 50%;
       transform: translateX(-50%);
       bottom: 10px;
-      z-index: 10;
+      z-index: 1;
       @media ${device.laptop}{
         position: absolute;
         left: 40px;
@@ -35,30 +36,21 @@ const PostContainer = styled.section`
       }
     }
   }
+  .btnPrimary{
+      input{
+          display: none;
+      }
+  }
 `
-export default function Home({post, currentUserLikes}) {
+export default function Home({post, currentUserLikes, festival}) {
 
   const [currentUser, setCurrentUser] = useState(null)
   const [cookies] = useCookies(['user'])
   const [userLikes, setUserLikes] = useState([])
+  const [opened, setOpened] = useState()
+  const [modalOptions, setModalOptions] = useState()
   
   const router = useRouter()
-  const handleAddPost = async() =>{
-    const res = await fetch(`/api/post/createPost`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content: 'Test Festival '+Math.floor(Math.random() * 1000) + 1,
-          festival_id:1,
-          user_id:21
-       }),
-    })
-    if(res.ok){
-      router.replace(router.asPath) 
-    }
-  }
 
   useEffect(() => {
     setCurrentUser(cookies.user)
@@ -73,8 +65,9 @@ export default function Home({post, currentUserLikes}) {
             content="Festiv-App"
         />
       </Head>
+      <Modal profileId={currentUser?.id} festival={festival} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions}/>  
       <div className='postContainer'>
-        <p className='btnPrimary'><span>Ajouter un post</span></p>
+        <p className='btnPrimary' onClick={() => {setOpened(true), setModalOptions('addPost')}}><span>Ajouter un post</span></p>
         {post.map((elt, i) =>(
             <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
         ))}
@@ -87,13 +80,17 @@ export async function getServerSideProps({req, res}){
   const cookie = parseCookies(req)
   const prisma = new PrismaClient()
   const data = await prisma.post.findMany({
+    orderBy:{
+      updatedAt:'desc'
+    },
     select:{
       id:true,
       content:true,
-      description:true,
+      image:true,
       user:{
         select:{
-          pseudo:true
+          pseudo:true,
+          avatar:true
         }
       },
       festival:{
@@ -128,6 +125,8 @@ export async function getServerSideProps({req, res}){
       }
     }
   })
+
+  const festival = await prisma.festival.findMany()
   
   if(res){
     if(cookie.user){
@@ -148,14 +147,16 @@ export async function getServerSideProps({req, res}){
       return{
         props:{
           post: data,
-          currentUserLikes: user.likes
+          currentUserLikes: user.likes,
+          festival
         }
       }
     }
   }
   return{
     props:{
-      post: data
+      post: data,
+      festival
     }
   }
 }

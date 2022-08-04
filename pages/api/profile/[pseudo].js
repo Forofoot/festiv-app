@@ -1,6 +1,4 @@
-import { hash } from 'bcryptjs';
 import { PrismaClient } from '@prisma/client'
-import { IncomingForm } from "formidable";
 import { uploadAvatar } from "../../../utils/cloudinary";
 import { getImage } from "../../../utils/formidable";
 
