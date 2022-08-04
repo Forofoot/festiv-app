@@ -202,7 +202,7 @@ const PostStyle = styled.div`
     }
 `
 
-export default function Post({data, currentUserId, currentUserLikes}) {
+export default function Post({data, currentUserId, currentUserLikes, ifNavigator}) {
     const [userLikes, setUserLikes] = useState([])
 
     const router = useRouter()
@@ -276,7 +276,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
               <p className='description'>{data.content}</p>
 
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
-                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)}/>
+                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}
