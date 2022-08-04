@@ -18,7 +18,7 @@ const LikesStyle = styled.div`
     }
 `
 
-export default function Like({liked, currentPost, currentUserId, likesCount, currentPostDescription, currentPostContent}) {
+export default function Like({liked, currentPost, currentUserId, likesCount, currentPostDescription, currentPostContent, ifNavigator}) {
     const router = useRouter()
     const [isLiked, setIsLiked] = useState(liked)
     const [totalLikes, setTotalLikes] = useState(likesCount)
@@ -55,11 +55,9 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
             }
         }
     }
-
-    
     const handleShare = (e,id, title, description) =>{
         e.preventDefault()
-        if(navigation.share){
+        if(navigator.share){
             navigator.share({
                 title: title,
                 text: description,
@@ -73,7 +71,7 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
             <div className='likesActions'>
                 <p onClick={(event) => handleLike(event, currentPost, currentUserId)}>{!isLiked ? ('cest pas like') : ('cest like')}</p>
                 
-                <p onClick={(event) => handleShare(event, currentPost, currentPostContent, currentPostDescription)}>Partager</p>
+                {ifNavigator ? (<p onClick={(event) => handleShare(event, currentPost, currentPostContent, currentPostDescription)}>Partager</p>) : ('')}
             </div>
             
             <span className='totalLikes'>{totalLikes} {totalLikes === 1 || totalLikes === 0 ? ('j\'aime') : ('j\'aimes')}</span>
