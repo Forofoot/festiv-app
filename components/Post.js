@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Moment from 'react-moment'
 import 'moment/locale/fr';
 import { device } from '../styles/device.css'
+import { toast } from 'react-hot-toast'
 
 const PostStyle = styled.div`
   display: flex;
@@ -43,7 +44,6 @@ const PostStyle = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
-    gap: 30px;
     min-width: 100%;
     padding: 25px;
     overflow: hidden;
@@ -59,6 +59,7 @@ const PostStyle = styled.div`
       display: flex;
       align-items: center;
       gap: 15px;
+      margin-bottom: 30px;
       div{
         overflow: hidden;
         border-radius: 50%;
@@ -68,6 +69,9 @@ const PostStyle = styled.div`
       p{
         font-size: 0.875rem;
       }
+    }
+    .description{
+      margin-bottom: 30px;
     }
     .actionBtn{
       display: flex;
@@ -202,29 +206,38 @@ const PostStyle = styled.div`
     }
 `
 
-export default function Post({data, currentUserId, currentUserLikes, ifNavigator}) {
+export default function Post({data, currentUserId, currentUserLikes}) {
     const [userLikes, setUserLikes] = useState([])
-
+    const [ifNavigator, setIfNavigator] = useState()
     const router = useRouter()
     
     const handleAddComment = async(e,id) => {
         e.preventDefault()
-        const res = await fetch(`/api/post/addComment`, {
-          method: 'POST',
-          headers:{
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id:id,
-            commentContent:e.target.comment.value,
-            currentUserId: currentUserId
+        if(!currentUserId){
+          toast.error('Veuillez vous connecter')
+          router.push('/auth/')
+        }else{
+          const res = await fetch(`/api/post/addComment`, {
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id:id,
+              commentContent:e.target.comment.value,
+              currentUserId: currentUserId
+            })
           })
-        })
-        if(res.ok){
-          router.replace(router.asPath)
+          if(res.ok){
+            router.replace(router.asPath)
+          }
         }
     }
-
+    
+    useEffect(() => {
+      console.log(navigator.share ? (true) : (false))
+      navigator.share ? (setIfNavigator(true)) : (setIfNavigator(false))
+    }, [])
     return (
         <PostStyle>
           <div className='post'>
@@ -255,6 +268,7 @@ export default function Post({data, currentUserId, currentUserLikes, ifNavigator
                       alt='Photo de profile'
                       width={48}
                       height={48}
+                      objectFit="cover"
                     />
                   ) : (
                     <Image
@@ -262,6 +276,7 @@ export default function Post({data, currentUserId, currentUserLikes, ifNavigator
                       alt='Photo de profile'
                       width={48}
                       height={48}
+                      objectFit="cover"
                     />
                   )}
                 </div>
@@ -276,50 +291,54 @@ export default function Post({data, currentUserId, currentUserLikes, ifNavigator
               <p className='description'>{data.content}</p>
 
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
-                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator}/>
+                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator} totalComments={data.comments.length}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}
               {router.pathname === "/" && (
                 <>
-                <div className='comments'>
-                <p className='commentHead'>Commentaires</p>
-                <div className='userComments'>
-                {data.comments?.map((com,index) => (
-                    <div className='userComment' key={index}>
-                      <div className='userCommentsImg'>
-                      {com.user?.avatar ? (
-                          <Image
-                            src={com?.user.avatar}
-                            alt={`Photo de ${com?.user.pseudo}`}
-                            width={35}
-                            height={35}
-                          />
-                        ) : (
-                          <Image
-                            src={'/profile/avatar.webp'}
-                            alt="Avatar"
-                            width={35}
-                            height={35}
-                            objectFit='cover'
-                          />
-                        )}
-                      </div>
-                      <div className='userCommentContent'>
-                        <div>
-                          <span>{com.user?.pseudo}</span>
-                          <div className='userCommentText'>
-                            <p>
-                              {com?.content}
-                            </p>
-                          </div>
+                {!data.comments.length ? (
+                  <p>Il n&apos;y a aucun commentaire.</p>
+                ) : (
+                  <div className='comments'>
+                  <p className='commentHead'>Commentaires</p>
+                  <div className='userComments'>
+                  {data.comments?.map((com,index) => (
+                      <div className='userComment' key={index}>
+                        <div className='userCommentsImg'>
+                        {com.user?.avatar ? (
+                            <Image
+                              src={com?.user.avatar}
+                              alt={`Photo de ${com?.user.pseudo}`}
+                              width={35}
+                              height={35}
+                            />
+                          ) : (
+                            <Image
+                              src={'/profile/avatar.webp'}
+                              alt="Avatar"
+                              width={35}
+                              height={35}
+                              objectFit='cover'
+                            />
+                          )}
                         </div>
-                        <span className='date'><Moment locale="fr" date={com?.updatedAt} fromNow /></span>
+                        <div className='userCommentContent'>
+                          <div>
+                            <span>{com.user?.pseudo}</span>
+                            <div className='userCommentText'>
+                              <p>
+                                {com?.content}
+                              </p>
+                            </div>
+                          </div>
+                          <span className='date'><Moment locale="fr" date={com?.updatedAt} fromNow /></span>
+                        </div>
                       </div>
-                    </div>
-                ))}
+                  ))}
+                  </div>
                 </div>
-              </div>
+                )}
               <Link href={`/details/${data.id}`}><a className='seeDetails'>Voir les détails</a></Link>
               </>
               )}
@@ -342,9 +361,13 @@ export default function Post({data, currentUserId, currentUserLikes, ifNavigator
                   </button> 
                 </form>
               </div>
-              <div className='displayComment'>
+                {!data.comments.length ? (
+                  <h2>Il n&apos;y a aucun commentaire.</h2>
+                ) : (
+
+                <div className='displayComment'>
                 <div className='comments'>
-                  <div className='userComments'>
+                <div className='userComments'>
                   {data.comments?.map((com,index) => (
                       <div className='userComment' key={index}>
                         <div className='userCommentsImg'>
@@ -378,9 +401,12 @@ export default function Post({data, currentUserId, currentUserLikes, ifNavigator
                         </div>
                       </div>
                   ))}
-                  </div>
                 </div>
               </div>
+              
+              </div>
+              )}
+              
             </div>
           )}
         </PostStyle>

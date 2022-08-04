@@ -47,24 +47,14 @@ export default function Home({post, currentUserLikes, festival}) {
   const [currentUser, setCurrentUser] = useState(null)
   const [cookies] = useCookies(['user'])
   const [userLikes, setUserLikes] = useState([])
-  const [ifNavigator, setIfNavigator] = useState()
   const [opened, setOpened] = useState()
   const [modalOptions, setModalOptions] = useState()
   const [posts, setPosts] = useState(post)
-  
-  const router = useRouter()
 
-  console.log(posts)
   useEffect(() => {
     setCurrentUser(cookies.user)
   }, [cookies.user])
 
-  
-
-  useEffect(() => {
-    console.log(navigator.share ? (true) : (false))
-    navigator.share ? (setIfNavigator(true)) : (setIfNavigator(false))
-  }, [])
   return (
     <PostContainer>
       <Head>
@@ -76,9 +66,11 @@ export default function Home({post, currentUserLikes, festival}) {
       </Head>
       <Modal profileId={currentUser?.id} festival={festival} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions} setPosts={setPosts}/>  
       <div className='postContainer'>
-        <p className='btnPrimary' onClick={() => {setOpened(true), setModalOptions('addPost')}}><span>Ajouter un post</span></p>
+        {currentUser && 
+          <p className='btnPrimary' onClick={() => {setOpened(true), setModalOptions('addPost')}}><span>Ajouter un post</span></p>
+        }
         {posts.map((elt, i) =>(
-            <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes} ifNavigator={ifNavigator}/>
+            <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
         ))}
       </div>
     </PostContainer>
