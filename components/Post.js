@@ -233,7 +233,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
           }
         }
     }
-    
+
     useEffect(() => {
       console.log(navigator.share ? (true) : (false))
       navigator.share ? (setIfNavigator(true)) : (setIfNavigator(false))
@@ -291,13 +291,13 @@ export default function Post({data, currentUserId, currentUserLikes}) {
               <p className='description'>{data.content}</p>
 
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
-                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator} totalComments={data.comments.length}/>
+                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator} totalComments={data.comments?.length}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}
               {router.pathname === "/" && (
                 <>
-                {!data.comments.length ? (
+                {!data.comments?.length ? (
                   <p>Il n&apos;y a aucun commentaire.</p>
                 ) : (
                   <div className='comments'>
