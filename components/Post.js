@@ -276,7 +276,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
               <p className='description'>{data.content}</p>
 
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
-                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes.some((like) => like.post_id == data.id)}/>
+                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}
