@@ -59,11 +59,13 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
     
     const handleShare = (e,id, title, description) =>{
         e.preventDefault()
-        navigator.share({
-            title: title,
-            text: description,
-            url: '/details/'+id
-        })
+        if(navigation.share){
+            navigator.share({
+                title: title,
+                text: description,
+                url: '/details/'+id
+            })
+        }
     }
 
     return (
