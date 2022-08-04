@@ -87,17 +87,56 @@ const ModalStyle = styled.div`
                 text-align: right;
             }
         }
+        .preview{
+            width:125px;
+            height: 125px;
+            object-fit: cover;
+            @media ${device.mobile}{
+                width: 100%;
+                height: 250px;
+            }
+        }
     }
 `
 
-function Modal({setOpened, isopened, profileDescription,  profileId, modalOptions}) {
+function Modal({setOpened, isopened, profileDescription,  profileId, modalOptions, festival}) {
     const [showPassword, setShowPassword] = useState(false)
     const router = useRouter()
     const [inputedUser, setInputedUser] = useState({
         description: profileDescription,
         newPassword: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        content:'',
+        festival:''
     }) 
+    const [imageUploaded, setImageUploaded] = useState();
+    const [previewImage, setpreviewImage] = useState();
+
+    const handleChange = (event) => {
+        setImageUploaded(event.target.files[0]);
+        setpreviewImage(URL.createObjectURL(event.target.files[0]))
+    };
+
+    const handleFestival = (event) => {
+        setInputedUser({ ...inputedUser, festival:event.target.value })
+    }
+
+    const handleAddPost = async(e) =>{
+        e.preventDefault()
+        const formData = new FormData()
+        formData.append("image", imageUploaded)
+        formData.append("content", inputedUser.content)
+        formData.append("user", profileId)
+        formData.append("festival", inputedUser.festival)
+        const res = await fetch(`/api/post/createPost`, {
+            method: 'POST',
+            body: formData,
+        })
+        if(res.ok){
+          router.replace(router.asPath) 
+          setOpened(null)
+        }
+      }
 
     const handleChangePassword = async(e) =>{
         e.preventDefault()
@@ -199,6 +238,37 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                             </div>
                         </label>
                     </div>
+                    <button className="btnPrimary">
+                        <span>Modifier</span>
+                    </button>
+                </form>
+            }
+
+            {modalOptions === 'addPost' && 
+                <form onSubmit={handleAddPost}>
+                    <label>Description</label>
+                    <textarea value={inputedUser.content || ''} onChange={(e) => setInputedUser({ ...inputedUser, content:e.target.value })}></textarea> 
+                    <label>Image</label>
+                    {previewImage &&
+                        <img className="preview" src={previewImage} alt="Prévisualitation de l'image"/>
+                    }
+                    <label className="btnPrimary">
+                        <span>Changer de photo</span>
+                        <input
+                            onChange={handleChange}
+                            accept=".jpg, .png, .gif, .jpeg"
+                            type="file"
+                            id='file-input'
+                            name="avatar"
+                        ></input>
+                    </label>
+                    <label>Sélectionner un festival</label>
+                    <select onChange={handleFestival}>
+                        <option value=''>Choisissez un festival</option>
+                        {festival?.map((elt, i) => (
+                            <option key={i} value={elt.id}>{elt.title}</option>
+                        ))}
+                    </select>
                     <button className="btnPrimary">
                         <span>Modifier</span>
                     </button>

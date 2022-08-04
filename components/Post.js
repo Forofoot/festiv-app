@@ -257,22 +257,41 @@ export default function Post({data, currentUserId, currentUserLikes}) {
         <PostStyle>
           <div className='post'>
             <div className='postImage'>
-              <Image
-                src={'/placeholder.webp'}
-                alt="Image du post"
-                layout='fill'
-                objectFit='cover'
-              />
+              {data.image ? (
+                  <Image
+                    src={`${data.image}`}
+                    alt="Image du post"
+                    layout='fill'
+                    objectFit='cover'
+                  />
+              ) : (
+                <Image
+                  src={'/placeholder.webp'}
+                  alt="Image du post"
+                  layout='fill'
+                  objectFit='cover'
+                />
+              )}
+              
             </div>
             <div className={`postDetails ${router.pathname === "/" ? ('') : ('details')}`}>
               <div className='postedUser'>
                 <div>
-                  <Image
-                    src={'/placeholder.webp'}
-                    alt='Photo de profile'
-                    width={48}
-                    height={48}
-                  />
+                  {data.user.avatar ? (
+                    <Image
+                      src={`${data.user.avatar}`}
+                      alt='Photo de profile'
+                      width={48}
+                      height={48}
+                    />
+                  ) : (
+                    <Image
+                      src={'/profile/avatar.webp'}
+                      alt='Photo de profile'
+                      width={48}
+                      height={48}
+                    />
+                  )}
                 </div>
                 <p>
                   <Link href={`/profile/${data.user?.pseudo}`}>
@@ -282,10 +301,10 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                   </Link>
                 </p>
               </div>
-              <p className='description'>{data.description}</p>
+              <p className='description'>{data.content}</p>
 
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
-                  <Like currentPost={data.id} likesCount={data.likes.length} currentPostContent={data.content} currentPostDescription={data.description} currentUserId={currentUserId} liked={userLikes.includes(data.id) ? true : false}/>
+                  <Like currentPost={data.id} likesCount={data.likes.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={userLikes.includes(data.id) ? true : false}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}

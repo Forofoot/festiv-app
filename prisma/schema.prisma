@@ -16,6 +16,8 @@ model Post {
   updatedAt   DateTime    @updatedAt
   content     String
   description String?
+  image      String?
+  imagePublicId    String?
   comments    Comment[]
   festival    Festival?   @relation(fields: [festival_id], references: [id])
   festival_id Int

@@ -68,10 +68,11 @@ export const getServerSideProps = async (context) => {
             select:{
                 id:true,
                 content:true,
-                description:true,
+                image:true,
                 user:{
                   select:{
-                    pseudo:true
+                    pseudo:true,
+                    avatar:true
                   }
                 },
                 festival:{
