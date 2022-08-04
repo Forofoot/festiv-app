@@ -20,7 +20,7 @@ const LikesStyle = styled.div`
 
 export default function Like({liked, currentPost, currentUserId, likesCount, currentPostDescription, currentPostContent}) {
     const router = useRouter()
-    const [isLiked, setIsLiked] = useState(null)
+    const [isLiked, setIsLiked] = useState(liked)
     const [totalLikes, setTotalLikes] = useState(likesCount)
 
     useEffect(() => {

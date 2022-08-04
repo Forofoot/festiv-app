@@ -47,7 +47,7 @@ export default async function handler(
                             imagePublicId: imageData.public_id
                         }
                     })
-                    res.status(200).json({message: 'Post créé'})
+                    res.status(200).json(createPost)
                 }else{
                     res.status(500).json({message: 'Aucune image'})
                 }

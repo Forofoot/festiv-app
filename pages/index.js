@@ -49,9 +49,11 @@ export default function Home({post, currentUserLikes, festival}) {
   const [userLikes, setUserLikes] = useState([])
   const [opened, setOpened] = useState()
   const [modalOptions, setModalOptions] = useState()
+  const [posts, setPosts] = useState(post)
   
   const router = useRouter()
 
+  console.log(posts)
   useEffect(() => {
     setCurrentUser(cookies.user)
   }, [cookies.user])
@@ -65,10 +67,10 @@ export default function Home({post, currentUserLikes, festival}) {
             content="Festiv-App"
         />
       </Head>
-      <Modal profileId={currentUser?.id} festival={festival} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions}/>  
+      <Modal profileId={currentUser?.id} festival={festival} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions} setPosts={setPosts}/>  
       <div className='postContainer'>
         <p className='btnPrimary' onClick={() => {setOpened(true), setModalOptions('addPost')}}><span>Ajouter un post</span></p>
-        {post.map((elt, i) =>(
+        {posts.map((elt, i) =>(
             <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
         ))}
       </div>
