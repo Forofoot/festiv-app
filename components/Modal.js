@@ -127,7 +127,7 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
     const [showPassword, setShowPassword] = useState(false)
     const router = useRouter()
     const [inputedUser, setInputedUser] = useState({
-        description: profileDescription,
+        description: '',
         newPassword: '',
         confirmPassword: '',
         content:'',
@@ -246,6 +246,13 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
             console.log(e)
         }
     }
+
+    useEffect (() =>{
+        setInputedUser({
+            ...inputedUser,
+            description: profileDescription
+        })
+    }, [profileDescription])
   return (
     <ModalStyle>
         <div className={`overlay ${isopened ? ('active') : ('')}`} onClick={() => setOpened(false)}></div>
