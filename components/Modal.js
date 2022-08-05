@@ -89,12 +89,35 @@ const ModalStyle = styled.div`
             }
         }
         .preview{
-            width:125px;
-            height: 125px;
+            max-width:125px;
+            max-height: 125px;
+            height: 100%;
+            width: 100%;
             object-fit: cover;
             @media ${device.mobile}{
-                width: 100%;
-                height: 250px;
+                max-height: 250px;
+                max-width: 100%;
+            }
+        }
+        .festivalsContainer{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            width: 100%;
+            gap: 15px;
+            margin-bottom: 20px;
+            .festival{
+                text-align: center;
+                padding: 10px;
+                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
+                border-radius: 10px;
+                cursor: pointer;
+                background-color: var(--white);
+                color: var(--primary);
+                transition: all .3s ease;
+                &.active{
+                    background-color: var(--secondary);
+                    color: var(--white);
+                }
             }
         }
     }
@@ -119,10 +142,6 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
         setpreviewImage(URL.createObjectURL(event.target.files[0]))
     };
 
-    const handleFestival = (event) => {
-        setInputedUser({ ...inputedUser, festival:event.target.value })
-    }
-
     const handleAddPost = async(e) =>{
         e.preventDefault()
         const formData = new FormData()
@@ -141,7 +160,9 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                 avatar: cookie.user?.avatar, pseudo: cookie.user?.pseudo
             }, festival:{
                 title: inputedUser.festival
-            }}, ...prevState])
+            },
+            comments:[],
+            likes:[]}, ...prevState])
             setOpened(null)
         }
       }
@@ -271,12 +292,13 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                         ></input>
                     </label>
                     <label>Sélectionner un festival</label>
-                    <select onChange={handleFestival}>
-                        <option value=''>Choisissez un festival</option>
+                    <div className='festivalsContainer'>
                         {festival?.map((elt, i) => (
-                            <option key={i} value={elt.id}>{elt.title}</option>
+                            <div onClick={() => setInputedUser({ ...inputedUser, festival:elt.id })} key={i} className={`festival ${inputedUser.festival === elt.id ? ('active') : ('')}`}>
+                                {elt.title}
+                            </div>
                         ))}
-                    </select>
+                    </div>
                     <button className="btnPrimary">
                         <span>Modifier</span>
                     </button>
