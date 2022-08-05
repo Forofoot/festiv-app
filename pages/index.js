@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { PrismaClient } from '@prisma/client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useCookies } from 'react-cookie'
 import { useRouter } from 'next/dist/client/router'
 import styled from 'styled-components'
@@ -8,6 +8,7 @@ import { parseCookies } from "../helpers"
 import Post from '../components/Post'
 import { device } from '../styles/device.css'
 import Modal from '../components/Modal'
+import Link from 'next/link'
 
 const PostContainer = styled.section`
   .postContainer{
@@ -50,11 +51,34 @@ export default function Home({post, currentUserLikes, festival}) {
   const [opened, setOpened] = useState()
   const [modalOptions, setModalOptions] = useState()
   const [posts, setPosts] = useState(post)
+  const [search, setSearch] = useState({
+    searchContent: '',
+  })
+  const [searchResults, setSearchResults] = useState()
 
   useEffect(() => {
     setCurrentUser(cookies.user)
   }, [cookies.user])
 
+  const searchResult = async() => {
+    if(search.searchContent){
+        const res = await fetch('/api/searchResult', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            search: search.searchContent
+          }),
+        })
+        const data = await res.json()
+        if(res.ok){
+          setSearchResults(data)
+        }
+      }else{
+        setSearchResults('')
+      }
+    }
   return (
     <PostContainer>
       <Head>
@@ -69,6 +93,22 @@ export default function Home({post, currentUserLikes, festival}) {
         {currentUser && 
           <p className='btnPrimary' onClick={() => {setOpened(true), setModalOptions('addPost')}}><span>Ajouter un post</span></p>
         }
+        <div className='searchBar'>
+          <input onKeyUp={searchResult} type="text" value={search.searchContent || ""} placeholder='Tapez le pseudo' onChange={(e) => setSearch({ ...search, searchContent:e.target.value })}/>
+          {searchResults && searchResults.length > 0 ? (
+            <>
+              {searchResults.map((elt,i) => (
+                <Link key={i} href={`/profile/${elt.pseudo}`}>
+                  <a>
+                    <p>{elt.pseudo}</p>
+                  </a>
+                </Link>
+              ))}
+            </>
+          ) : (
+            <p>Aucun résultat</p>
+          )}
+        </div>
         {posts.map((elt, i) =>(
             <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
         ))}

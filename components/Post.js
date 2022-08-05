@@ -211,7 +211,6 @@ export default function Post({data, currentUserId, currentUserLikes}) {
     const [userLikes, setUserLikes] = useState([])
     const [ifNavigator, setIfNavigator] = useState()
     const router = useRouter()
-    
     const handleAddComment = async(e,id) => {
         e.preventDefault()
         if(!currentUserId){
@@ -236,7 +235,6 @@ export default function Post({data, currentUserId, currentUserLikes}) {
     }
 
     useEffect(() => {
-      console.log(navigator.share ? (true) : (false))
       navigator.share ? (setIfNavigator(true)) : (setIfNavigator(false))
     }, [])
     return (

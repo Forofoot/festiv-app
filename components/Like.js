@@ -30,7 +30,7 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
     const router = useRouter()
     const [isLiked, setIsLiked] = useState(liked)
     const [totalLikes, setTotalLikes] = useState(likesCount)
-
+    
     useEffect(() => {
         setIsLiked(liked)
     }, [liked])
