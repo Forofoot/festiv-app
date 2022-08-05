@@ -46,7 +46,7 @@ export default createGlobalStyle`
   input{
     all: unset;
     padding: 5px 0;
-    border-bottom: 2px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
     width: 100%;
     margin-bottom: 10px;
     transition: border .2s linear;
