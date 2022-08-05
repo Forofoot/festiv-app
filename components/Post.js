@@ -135,6 +135,9 @@ const PostStyle = styled.div`
           border-color: var(--primary);
           color: var(--primary);
           width: 40%;
+          .loader::before{
+            background: var(--primary);
+          }
         }
       }
     }
@@ -210,8 +213,10 @@ const PostStyle = styled.div`
 export default function Post({data, currentUserId, currentUserLikes}) {
     const [userLikes, setUserLikes] = useState([])
     const [ifNavigator, setIfNavigator] = useState()
+    const [loading, setLoading] = useState(false)
     const router = useRouter()
     const handleAddComment = async(e,id) => {
+        setLoading(true)
         e.preventDefault()
         if(!currentUserId){
           toast.error('Veuillez vous connecter')
@@ -229,6 +234,8 @@ export default function Post({data, currentUserId, currentUserLikes}) {
             })
           })
           if(res.ok){
+            e.target.comment.value = ''
+            setLoading(false)
             router.replace(router.asPath)
           }
         }
@@ -360,9 +367,13 @@ export default function Post({data, currentUserId, currentUserLikes}) {
               <div className='addCommentSection'>
                 <form onSubmit={(event) => handleAddComment(event, data.id)}>
                   <input type="text" placeholder='Commentaire' name='comment'/>
-                  <button className='btnSecondary'>
-                    <span>Ajouter</span>
-                  </button> 
+                  <button className="btnSecondary" disabled={loading ? true : false}>
+                        {loading ? (
+                            <span className='loader'></span>
+                        ) : (
+                            <span>Ajouter</span>
+                        )}
+                    </button> 
                 </form>
               </div>
                 {!data.comments.length ? (

@@ -299,7 +299,7 @@ export default function Profile({profile, currentUserFollows}){
                     content="Voici la page connexion de Festiv-app"
                 />
             </Head>
-            <Modal profileDescription={profile?.description} profileId={profile?.id} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
+            <Modal profileDescription={profile.description} profileId={profile?.id} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
             <ProfileStyle>
                 <div className={`profileContainer ${currentOptions ? 'modifyContainer' : ''}`}>
                     {profile?.pseudo  == currentUser?.pseudo && (
@@ -358,7 +358,7 @@ export default function Profile({profile, currentUserFollows}){
                                         )}
                                     </>
                                 ) : (
-                                    <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id} profileDescription={profile?.description} profileFirstName={profile.firstName} profileLastName={profile.lastName} followersLength={profile?.followers.length}
+                                    <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id} profileDescription={profile.description} profileFirstName={profile.firstName} profileLastName={profile.lastName} followersLength={profile?.followers.length}
                                     followingsLength={profile?.followings.length}/>
                                 )}
                                 {profile.posts?.length ? (
