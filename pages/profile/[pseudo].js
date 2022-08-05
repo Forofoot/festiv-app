@@ -467,6 +467,9 @@ export const getServerSideProps = async (context) => {
                     select:{
                         id:true,
                         image:true,
+                    },
+                    orderBy:{
+                        updatedAt:"desc"
                     }
                 }
             }

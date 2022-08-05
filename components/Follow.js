@@ -60,7 +60,8 @@ export default function Follow({currentUserId, following, follower, profileResul
         <div className='accountName'>
             <h2>{profileFirstName} {profileLastName}</h2>
             <p className='btnPrimary' onClick={(e) => follow(e)}>{isFollowed ? (<span>Se désabonner</span>) : (
-                <span>S&apos;abonner</span>)} {isFollowing &&(<span>Vous suit</span>)}</p>
+                <span>{isFollowing ? (<>S&apos;abonner en retour</>) : (<>S&apos;abonner</>)}</span>)}</p>
+            
         </div>
         {profileDescription ? (
             <p>{profileDescription}</p>
