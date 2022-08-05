@@ -128,12 +128,13 @@ const PostStyle = styled.div`
         flex-direction: row;
         justify-content: space-between;
         input{
-          max-width: 280px;
+          width: 60%;
         }
         .btnSecondary{
           margin: 0;
           border-color: var(--primary);
           color: var(--primary);
+          width: 40%;
         }
       }
     }
