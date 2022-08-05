@@ -383,6 +383,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                               alt={`Photo de ${com?.user.pseudo}`}
                               width={35}
                               height={35}
+                              objectFit="cover"
                             />
                           ) : (
                             <Image
