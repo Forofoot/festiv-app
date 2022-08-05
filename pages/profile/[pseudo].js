@@ -100,7 +100,6 @@ const ProfileStyle = styled.section`
                     font-weight: bold;
                     position: relative;
                     width: 20%;
-                    cursor: pointer;
                 }
                 .separator{
                     width: 2px;
@@ -212,6 +211,7 @@ export default function Profile({profile, currentUserFollows}){
     const [opened, setOpened] = useState(false)
     const router = useRouter()
 
+    {/*
     const handleShowFollowings = async(e) =>{
         setCurrentShow('showFollowings')
         try{
@@ -267,7 +267,7 @@ export default function Profile({profile, currentUserFollows}){
             console.log(e)
         }
     }
-    
+    */}
     useEffect(() => {
         let followersList = []
         let followsList = []
@@ -340,12 +340,12 @@ export default function Profile({profile, currentUserFollows}){
                                     <>
                                         <div className="followStats">
                                             <div className="following">
-                                                <p onClick={() =>handleShowFollowings()}>{profile?.followings.length}</p>
+                                                <p>{profile?.followings.length}</p>
                                                 <p>Abonnés</p>
                                             </div>
                                             <span className="separator"></span>
                                             <div className="follower">
-                                                <p onClick={() =>handleShowFollowers()}>{profile?.followers.length}</p>
+                                                <p>{profile?.followers.length}</p>
                                                 <p>Abonnements</p>
                                             </div>
                                         </div>
