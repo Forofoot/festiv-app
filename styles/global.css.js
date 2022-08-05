@@ -297,6 +297,39 @@ export default createGlobalStyle`
   0%{transform:scale(1.4);}
   100%{transform:scale(1);}
 }
+
+.loader{
+  display: inline-block;
+  width: 40%;
+  height: 3px;
+  border-radius: 40px;
+  background-color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.loader::before{
+  content:'';
+  position: absolute;
+  top: 0;
+  left: -50px;
+  width: 200%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90.32deg, #6300B1 8.05%, #002762 82.81%);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: scale 1s infinite;
+  border-radius: 40px;
+}
+@keyframes scale{
+  50%{
+    transform: scaleX(1);
+  }
+  100%{
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+}
   :root{
     --primary: #000000;
     --secondary: #7620BB;
