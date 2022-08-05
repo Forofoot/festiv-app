@@ -178,6 +178,22 @@ const ProfileStyle = styled.section`
             }
         }
     }
+    .postContainer{
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(2, auto);
+        margin-top: 30px;
+        .postBlock{
+            border-radius: 10px;
+            aspect-ratio: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        @media ${device.mobile}{
+            grid-template-columns: repeat(3, auto);
+            margin-top: 50px;
+        }
+    }
 `
 
 export default function Profile({profile, currentUserFollows}){
@@ -345,6 +361,23 @@ export default function Profile({profile, currentUserFollows}){
                                     <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id} profileDescription={profile?.description} profileFirstName={profile.firstName} profileLastName={profile.lastName} followersLength={profile?.followers.length}
                                     followingsLength={profile?.followings.length}/>
                                 )}
+                                {profile.posts?.length ? (
+                                <div className="postContainer">
+                                    {profile.posts.map((elt,i) => (
+                                        <div key={i} className="postBlock">
+                                            <Link href={`/details/${elt.id}`}>
+                                                <a>
+                                                    <Image src={`${elt.image}`} alt={"Post"} layout="fill" objectFit="cover"/>
+                                                </a>
+                                            </Link>
+                                        </div>
+                                    ))}
+                                </div>
+                                ) : (
+                                    <p>Aucun post</p>
+                                )
+                            }
+                                
                             </div>
 
                             {currentShow == 'showFollowings' && (
@@ -430,6 +463,12 @@ export const getServerSideProps = async (context) => {
                 lastName:true,
                 followings:true,
                 followers:true,
+                posts:{
+                    select:{
+                        id:true,
+                        image:true,
+                    }
+                }
             }
         })
 
