@@ -13,9 +13,10 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
         setImageUploaded(event.target.files[0]);
         setpreviewImage(URL.createObjectURL(event.target.files[0]))
     };
-
+    const [loading, setLoading] = useState(false);
     const handleModifyInfos = async(e) =>{
         e.preventDefault()
+        setLoading(true)
         toast.loading('Chargement en cours...')
         const formData = new FormData()
         formData.append("image", imageUploaded)
@@ -26,6 +27,7 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
         
         if(res.ok){
             const data = await res.json()
+            setLoading(false)
             toast.remove()
             setCookie("user", JSON.stringify(data), {
                 path: '/',
@@ -35,6 +37,7 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
             toast.success('Profil modifié')
             router.push(`/profile/${data.pseudo}`)
         }else{
+            setLoading(false)
             toast.remove()
             toast.error('Erreur lors de la modification de vos infos')
         }
@@ -113,7 +116,13 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
                     ></input>
                 </label>
                 {previewImage && (
-                    <button className="btnPrimary" type='submit'><span>Modifier</span></button>
+                    <button className="btnPrimary" disabled={loading ? true : false}>
+                        {loading ? (
+                            <span className='loader'></span>
+                        ) : (
+                            <span>Modifier</span>
+                        )}
+                    </button>
                 )}
             </form>
 

@@ -10,6 +10,7 @@ import { device } from '../styles/device.css'
 import Modal from '../components/Modal'
 import Link from 'next/link'
 import Image from 'next/image'
+import { set } from 'nprogress'
 
 const PostContainer = styled.section`
   .postContainer{
@@ -82,6 +83,9 @@ const PostContainer = styled.section`
       @media ${device.laptop}{
         max-width: 280px;
       }
+      .loading{
+        margin: auto;
+      }
       .results{
         background-color: var(--white);
         transition: all ease-in-out 0.2s;
@@ -130,12 +134,14 @@ export default function Home({post, currentUserLikes, festival}) {
     searchContent: '',
   })
   const [searchResults, setSearchResults] = useState()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setCurrentUser(cookies.user)
   }, [cookies.user])
 
   const searchResult = async() => {
+    setLoading(true)
     if(search.searchContent){
         const res = await fetch('/api/searchResult', {
           method: 'POST',
@@ -148,9 +154,11 @@ export default function Home({post, currentUserLikes, festival}) {
         })
         const data = await res.json()
         if(res.ok){
+          setLoading(false)
           setSearchResults(data)
         }
       }else{
+        setLoading(false)
         setSearchResults('')
       }
     }
@@ -174,27 +182,33 @@ export default function Home({post, currentUserLikes, festival}) {
           </div>
           <input onKeyUp={searchResult} type="text" value={search.searchContent || ""} placeholder='Tapez le pseudo' onChange={(e) => setSearch({ ...search, searchContent:e.target.value })}/>
           <div className='searchResults'>
-          {searchResults && searchResults.length > 0 ? (
-              <>
-              {searchResults.map((elt,i) => (
-                <div key={i} className='results'>
-                  <Link  href={`/profile/${elt.pseudo}`}>
-                    <a>
-                      <div className='resultsImg'>
-                        {elt.avatar ? (
-                          <Image src={elt.avatar} alt={elt.pseudo} width={45} height={45} objectFit="cover"/>
-                        ) : (
-                          <Image src='/profile/avatar.webp' alt={elt.pseudo} width={45} height={45} objectFit="cover"/>
-                        )}
-                      </div>
-                      <p>{elt.pseudo}</p>
-                    </a>
-                  </Link>
-                </div>
-              ))}
-              </>
+          {loading ? (
+              <span className='loader'></span>
           ) : (
-            <p>Aucun résultat</p>
+            <>
+              {searchResults && searchResults.length > 0 ? (
+                  <>
+                  {searchResults.map((elt,i) => (
+                    <div key={i} className='results'>
+                      <Link  href={`/profile/${elt.pseudo}`}>
+                        <a>
+                          <div className='resultsImg'>
+                            {elt.avatar ? (
+                              <Image src={elt.avatar} alt={elt.pseudo} width={45} height={45} objectFit="cover"/>
+                            ) : (
+                              <Image src='/profile/avatar.webp' alt={elt.pseudo} width={45} height={45} objectFit="cover"/>
+                            )}
+                          </div>
+                          <p>{elt.pseudo}</p>
+                        </a>
+                      </Link>
+                    </div>
+                  ))}
+                  </>
+              ) : (
+                <p>Aucun résultat</p>
+              )}
+            </>
           )}
           </div>
         </div>

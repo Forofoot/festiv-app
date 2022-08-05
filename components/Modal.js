@@ -137,6 +137,8 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
     const [previewImage, setpreviewImage] = useState();
     const [cookie] = useCookies(['user'])
 
+    const [loading, setLoading] = useState(false)
+
     const handleChange = (event) => {
         setImageUploaded(event.target.files[0]);
         setpreviewImage(URL.createObjectURL(event.target.files[0]))
@@ -144,6 +146,7 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
 
     const handleAddPost = async(e) =>{
         e.preventDefault()
+        setLoading(true)
         const formData = new FormData()
         formData.append("image", imageUploaded)
         formData.append("content", inputedUser.content)
@@ -156,6 +159,7 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
         const data = await res.json()
 
         if(res.ok){
+            setLoading(false)
             setPosts(prevState => [{id:data.id, content:data.content, image:data.image, user:{
                 avatar: cookie.user?.avatar, pseudo: cookie.user?.pseudo
             }, festival:{
@@ -169,6 +173,7 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
 
     const handleChangePassword = async(e) =>{
         e.preventDefault()
+        setLoading(true)
         try{
             toast.loading('Chargement en cours')
             console.log(inputedUser.newPassword)
@@ -194,11 +199,13 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                     })
         
                     if(res.ok){
+                        setLoading(false)
                         toast.remove()
                         toast.success('Mot de passe changé')
                         router.replace(router.asPath)
                         setOpened(null)
                     }else{
+                        setLoading(false)
                         toast.error('Erreur')
                     }
                 }
@@ -210,6 +217,7 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
 
     const handleChangeDescription = async(e) =>{
         e.preventDefault()
+        setLoading(true)
         try{
             toast.loading('Chargement en cours ...')
             const res = await fetch('/api/profile/changeDescription', {
@@ -224,14 +232,17 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
             })
 
             if(res.ok){
+                setLoading(false)
                 toast.remove()
                 toast.success('Description changée')
                 router.replace(router.asPath)
                 setOpened(null)
             }else{
+                setLoading(false)
                 toast.error('Erreur')
             }
         }catch(e){
+            setLoading(false)
             console.log(e)
         }
     }
@@ -247,8 +258,12 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                     <label>Description</label>   
                     <textarea value={inputedUser.description || ''} onChange={(e) => setInputedUser({ ...inputedUser, description:e.target.value })}></textarea> 
                     <p className='limitedTo'>Limité à 100 caractères</p>
-                    <button className="btnPrimary">
-                        <span>Modifier</span>
+                    <button className="btnPrimary" disabled={loading ? true : false}>
+                        {loading ? (
+                            <span className='loader'></span>
+                        ) : (
+                            <span>Modifier</span>
+                        )}
                     </button>
                 </form>
             }
@@ -267,8 +282,12 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                             </div>
                         </label>
                     </div>
-                    <button className="btnPrimary">
-                        <span>Modifier</span>
+                    <button className="btnPrimary" disabled={loading ? true : false}>
+                        {loading ? (
+                            <span className='loader'></span>
+                        ) : (
+                            <span>Modifier</span>
+                        )}
                     </button>
                 </form>
             }
@@ -299,8 +318,12 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                             </div>
                         ))}
                     </div>
-                    <button className="btnPrimary">
-                        <span>Modifier</span>
+                    <button className="btnPrimary" disabled={loading ? true : false}>
+                        {loading ? (
+                            <span className='loader'></span>
+                        ) : (
+                            <span>Modifier</span>
+                        )}
                     </button>
                 </form>
             }
