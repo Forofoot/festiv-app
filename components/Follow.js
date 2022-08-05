@@ -46,12 +46,12 @@ export default function Follow({currentUserId, following, follower, profileResul
     <div>
         <div className="followStats">
             <div className="following">
-                <p onClick={() =>handleShowFollowings()}>{totalFollows}</p>
+                <p>{totalFollows}</p>
                 <p>Abonnés</p>
             </div>
             <span className="separator"></span>
             <div className="follower">
-                <p onClick={() =>handleShowFollowers()}>{followersLength}</p>
+                <p >{followersLength}</p>
                 <p>Abonnements</p>
             </div>
         </div>

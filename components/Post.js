@@ -313,6 +313,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                               alt={`Photo de ${com?.user.pseudo}`}
                               width={35}
                               height={35}
+                              objectFit="cover"
                             />
                           ) : (
                             <Image
@@ -326,7 +327,11 @@ export default function Post({data, currentUserId, currentUserLikes}) {
                         </div>
                         <div className='userCommentContent'>
                           <div>
-                            <span>{com.user?.pseudo}</span>
+                            <Link href={`/profile/${com.user?.pseudo}`}>
+                            <a>
+                              <span>{com.user?.pseudo}</span>
+                            </a>
+                            </Link>
                             <div className='userCommentText'>
                               <p>
                                 {com?.content}
