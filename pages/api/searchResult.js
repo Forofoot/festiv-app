@@ -14,7 +14,10 @@ export default async function handler(
                 pseudo:{
                     contains:search
                 }
-            },  
+            },select:{
+                pseudo:true,
+                avatar:true,
+            },
             take:4
         })
         res.status(200).json(findUsers)

@@ -8,7 +8,7 @@ import { useCookies } from 'react-cookie'
 const ModalStyle = styled.div`
     .overlay{
         color: #fff;
-        height: 100%;
+        height: 100vh;
         position: absolute;
         visibility: hidden;
         width: 100%;

@@ -9,6 +9,7 @@ import Post from '../components/Post'
 import { device } from '../styles/device.css'
 import Modal from '../components/Modal'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const PostContainer = styled.section`
   .postContainer{
@@ -41,6 +42,80 @@ const PostContainer = styled.section`
       input{
           display: none;
       }
+  }
+  .searchBar{
+    position: relative;
+    top: auto;
+    right: auto;
+    max-width: 840px;
+    width: 100%;
+    @media ${device.laptop}{ 
+      position: absolute;
+      top: 40px;
+    }
+    input{
+      height: 15px;
+      margin-bottom: 0;
+      max-width: calc(100% - 30px);
+      padding-left: 30px;
+      @media ${device.laptop}{
+        max-width: 250px;
+      }
+    }
+    
+    .searchResults:hover{
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .searchResults{
+      position: absolute;
+      top: calc(0 - 15px);
+      left: 0;
+      background-color: var(--white);
+      width: 100%;
+      border-radius: 0 0 10px 10px;
+      padding: 10px;
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      @media ${device.laptop}{
+        max-width: 280px;
+      }
+      .results{
+        background-color: var(--white);
+        transition: all ease-in-out 0.2s;
+        padding: 10px;
+        &:hover{
+          background-color: var(--grey);
+          color: var(--white);
+        }
+        a{
+          display: flex;
+          align-items: center;
+          gap: 15px;
+        }
+        .resultsImg{
+          width: 45px;
+          height: 45px;
+          overflow: hidden;
+          border-radius: 50%;
+        }
+        p{
+          font-weight: bold;
+        }
+      }
+    }
+    input:focus + .searchResults{
+      opacity: 1;
+      visibility: visible;
+    }
+    .searchIcon{
+      position: absolute;
+      top:50%;
+      left:0;
+      transform: translateY(-50%);
+    }
   }
 `
 export default function Home({post, currentUserLikes, festival}) {
@@ -94,20 +169,34 @@ export default function Home({post, currentUserLikes, festival}) {
           <p className='btnPrimary' onClick={() => {setOpened(true), setModalOptions('addPost')}}><span>Ajouter un post</span></p>
         }
         <div className='searchBar'>
+          <div className='searchIcon'>
+            <Image src='/search/search.svg' alt='Rechercher' width={20} height={20}/>
+          </div>
           <input onKeyUp={searchResult} type="text" value={search.searchContent || ""} placeholder='Tapez le pseudo' onChange={(e) => setSearch({ ...search, searchContent:e.target.value })}/>
+          <div className='searchResults'>
           {searchResults && searchResults.length > 0 ? (
-            <>
+              <>
               {searchResults.map((elt,i) => (
-                <Link key={i} href={`/profile/${elt.pseudo}`}>
-                  <a>
-                    <p>{elt.pseudo}</p>
-                  </a>
-                </Link>
+                <div key={i} className='results'>
+                  <Link  href={`/profile/${elt.pseudo}`}>
+                    <a>
+                      <div className='resultsImg'>
+                        {elt.avatar ? (
+                          <Image src={elt.avatar} alt={elt.pseudo} width={45} height={45} objectFit="cover"/>
+                        ) : (
+                          <Image src='/profile/avatar.webp' alt={elt.pseudo} width={45} height={45} objectFit="cover"/>
+                        )}
+                      </div>
+                      <p>{elt.pseudo}</p>
+                    </a>
+                  </Link>
+                </div>
               ))}
-            </>
+              </>
           ) : (
             <p>Aucun résultat</p>
           )}
+          </div>
         </div>
         {posts.map((elt, i) =>(
             <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
