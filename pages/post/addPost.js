@@ -4,6 +4,7 @@ import {PrismaClient} from '@prisma/client'
 import { device } from '../../styles/device.css'
 import { useRouter } from 'next/router'
 import { useCookies } from 'react-cookie'
+import { toast } from 'react-hot-toast'
 
 const AddPostStyle = styled.section`
     display: flex;
@@ -48,12 +49,6 @@ const AddPostStyle = styled.section`
                 font-size: 1rem;
                 font-weight: bold;
                 color: var(--secondary);
-            }
-            .limitedTo{
-                width: 100%;
-                font-size: 0.875rem;
-                color: var(--greyDark);
-                text-align: right;
             }
         }
         .preview{
@@ -121,25 +116,39 @@ function AddPost({festival}) {
     const handleAddPost = async(e) =>{
     e.preventDefault()
     setLoading(true)
-    const formData = new FormData()
-    formData.append("image", imageUploaded)
-    formData.append("content", inputedUser.content)
-    formData.append("user", currentUser?.id)
-    formData.append("festival", inputedUser.festival)
-    const res = await fetch(`/api/post/createPost`, {
-        method: 'POST',
-        body: formData,
-    })
-
-    if(res.ok){
-        setLoading(false)
-        router.push('/')
+    if(!currentUser){
+        toast.error('Vous devez être connecté pour poster un message')
+        router.push('/auth/')
+    }else{
+        const formData = new FormData()
+        formData.append("image", imageUploaded)
+        formData.append("content", inputedUser.content)
+        formData.append("user", currentUser?.id)
+        formData.append("festival", inputedUser.festival)
+        const res = await fetch(`/api/post/createPost`, {
+            method: 'POST',
+            body: formData,
+        })
+    
+        if(res.ok){
+            setLoading(false)
+            router.push('/')
+            toast.success('Post créé avec succès')
+            }else{
+                setLoading(false)
+                toast.error('Veuillez remplir tous les champs')
+            }
         }
     }
-
+    
     useEffect(() => {
-        setCurrentUser(cookies.user)
-    }, [cookies.user])
+        if(cookies.user){
+            setCurrentUser(cookies.user)
+        }else{
+            router.push('/auth/')
+            toast.error('Vous devez être connecté pour accéder à cette page')
+        }
+    }, [cookies.user, router])
   return (
     <AddPostStyle>
         <h1>Ajouter un post</h1>

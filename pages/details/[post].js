@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react'
 import { PrismaClient } from '@prisma/client'
-import { parseCookies } from '../../helpers'
 import Post from '../../components/Post'
 import { useCookies } from 'react-cookie'
 import { device } from '../../styles/device.css'
 import styled from 'styled-components'
 import Head from 'next/dist/shared/lib/head'
+import { useRouter } from 'next/router'
+import { toast } from 'react-hot-toast'
 
 const PostContainer = styled.section`
 .postContainer{
@@ -24,9 +25,17 @@ export default function PostDetail({findPost}) {
     const [currentUser, setCurrentUser] = useState(null)
     const [cookies] = useCookies(['user'])
     const [userLikes, setUserLikes] = useState([])
+    const router = useRouter()
 
+    console.log(findPost)
     useEffect(() => {
-      setCurrentUser(cookies.user)
+      if(cookies.user){
+        setCurrentUser(cookies.user)
+      }
+      if(!findPost){
+        router.push('/')
+        toast.error('Publication introuvable')
+      }
       {cookies.user &&
         fetch(`/api/post/userLikes`, {
           method: 'POST',
@@ -40,7 +49,7 @@ export default function PostDetail({findPost}) {
           setUserLikes(res.likes)
         })
       }
-    }, [setUserLikes, cookies.user])
+    }, [setUserLikes, cookies.user, findPost?.length])
   return (
     <PostContainer>
       <Head>
@@ -50,9 +59,11 @@ export default function PostDetail({findPost}) {
             content="Festiv-App"
         />
       </Head>
-      <div className='postContainer'>
-        <Post data={findPost} currentUserId={currentUser?.id} setUserLikes={setUserLikes} userLikes={userLikes}/>
-      </div>
+      {findPost &&
+        <div className='postContainer'>
+          <Post data={findPost} currentUserId={currentUser?.id} setUserLikes={setUserLikes} userLikes={userLikes}/>
+        </div>
+      }
     </PostContainer>
   )
 }
@@ -107,7 +118,7 @@ export const getServerSideProps = async (context) => {
                   }
                 }
               }
-        })
+            })
 
         return{
             props:{
