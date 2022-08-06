@@ -52,10 +52,7 @@ export default function PostDetail({findPost}) {
     <PostContainer>
       <Head>
         <title>Festiv-App | Page détails</title>
-        <meta
-            name="description"
-            content="Festiv-App"
-        />
+        <meta name="description" content="Commenter, aimer, partager les publications de votre choix" />
       </Head>
       {findPost &&
         <div className='postContainer'>

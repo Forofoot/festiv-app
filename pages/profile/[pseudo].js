@@ -245,10 +245,10 @@ export default function Profile({profile, currentUserFollows}){
     return(
         <>
             <Head>
-                <title>Festiv-App | Page profile</title>
+                <title>Festiv-App | Page profil</title>
                 <meta
                     name="description"
-                    content="Voici la page connexion de Festiv-app"
+                    content="Accéder, modifier à tout moment votre profil depuis votre page profil"
                 />
             </Head>
             {profile  && 

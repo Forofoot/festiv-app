@@ -240,11 +240,8 @@ export default function Signin () {
     return(
         <AuthStyle>
             <Head>
-                <title>Festiv-App | Connexion</title>
-                <meta
-                    name="description"
-                    content="Voici la page connexion de Festiv-app"
-                />
+                <title>Festiv-App | Authentification</title>
+                <meta name="description" content="Créer un compte ou connectez-vous pour accéder à toutes les fonctionnalités de Festiv-Ap" />
             </Head>
             <Image
                 src={'/auth/bg-auth.webp'}
