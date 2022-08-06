@@ -38,7 +38,7 @@ const AddPostStyle = styled.section`
             textarea{
                 max-width: 100%;
                 max-height: 100%;
-                min-width: 420px;
+                width: calc(100% - 40px);
                 min-height: 110px;
                 padding: 10px 20px;
                 color: var(--primary);
