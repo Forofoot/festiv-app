@@ -27,7 +27,7 @@ const ModalStyle = styled.div`
     .modal{
         width: 320px;
         min-height: 250px;
-        background:#fff;
+        background:var(--white);
         border-radius: 20px;
         position: absolute;
         visibility: hidden;
@@ -88,88 +88,19 @@ const ModalStyle = styled.div`
                 text-align: right;
             }
         }
-        .preview{
-            max-width:125px;
-            max-height: 125px;
-            height: 100%;
-            width: 100%;
-            object-fit: cover;
-            @media ${device.mobile}{
-                max-height: 250px;
-                max-width: 100%;
-            }
-        }
-        .festivalsContainer{
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            width: 100%;
-            gap: 15px;
-            margin-bottom: 20px;
-            .festival{
-                text-align: center;
-                padding: 10px;
-                box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
-                border-radius: 10px;
-                cursor: pointer;
-                background-color: var(--white);
-                color: var(--primary);
-                transition: all .3s ease;
-                &.active{
-                    background-color: var(--secondary);
-                    color: var(--white);
-                }
-            }
-        }
     }
 `
 
-function Modal({setOpened, isopened, profileDescription,  profileId, modalOptions, festival, setPosts}) {
+function Modal({setOpened, isopened, profileDescription,  profileId, modalOptions}) {
     const [showPassword, setShowPassword] = useState(false)
     const router = useRouter()
     const [inputedUser, setInputedUser] = useState({
         description: '',
         newPassword: '',
         confirmPassword: '',
-        content:'',
-        festival:''
-    }) 
-    const [imageUploaded, setImageUploaded] = useState();
-    const [previewImage, setpreviewImage] = useState();
-    const [cookie] = useCookies(['user'])
+    })
 
     const [loading, setLoading] = useState(false)
-
-    const handleChange = (event) => {
-        setImageUploaded(event.target.files[0]);
-        setpreviewImage(URL.createObjectURL(event.target.files[0]))
-    };
-
-    const handleAddPost = async(e) =>{
-        e.preventDefault()
-        setLoading(true)
-        const formData = new FormData()
-        formData.append("image", imageUploaded)
-        formData.append("content", inputedUser.content)
-        formData.append("user", profileId)
-        formData.append("festival", inputedUser.festival)
-        const res = await fetch(`/api/post/createPost`, {
-            method: 'POST',
-            body: formData,
-        })
-        const data = await res.json()
-
-        if(res.ok){
-            setLoading(false)
-            setPosts(prevState => [{id:data.id, content:data.content, image:data.image, user:{
-                avatar: cookie.user?.avatar, pseudo: cookie.user?.pseudo
-            }, festival:{
-                title: inputedUser.festival
-            },
-            comments:[],
-            likes:[]}, ...prevState])
-            setOpened(null)
-        }
-      }
 
     const handleChangePassword = async(e) =>{
         e.preventDefault()
@@ -252,7 +183,7 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
             ...inputedUser,
             description: profileDescription
         })
-    }, [profileDescription])
+    }, [profileDescription, setInputedUser])
   return (
     <ModalStyle>
         <div className={`overlay ${isopened ? ('active') : ('')}`} onClick={() => setOpened(false)}></div>
@@ -288,42 +219,6 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                                 <div className="indicator"></div>
                             </div>
                         </label>
-                    </div>
-                    <button className="btnPrimary" disabled={loading ? true : false}>
-                        {loading ? (
-                            <span className='loader'></span>
-                        ) : (
-                            <span>Modifier</span>
-                        )}
-                    </button>
-                </form>
-            }
-
-            {modalOptions === 'addPost' && 
-                <form onSubmit={handleAddPost}>
-                    <label>Description</label>
-                    <textarea value={inputedUser.content || ''} onChange={(e) => setInputedUser({ ...inputedUser, content:e.target.value })}></textarea> 
-                    <label>Image</label>
-                    {previewImage &&
-                        <img className="preview" src={previewImage} alt="Prévisualitation de l'image"/>
-                    }
-                    <label className="btnPrimary">
-                        <span>Changer de photo</span>
-                        <input
-                            onChange={handleChange}
-                            accept=".jpg, .png, .gif, .jpeg"
-                            type="file"
-                            id='file-input'
-                            name="avatar"
-                        ></input>
-                    </label>
-                    <label>Sélectionner un festival</label>
-                    <div className='festivalsContainer'>
-                        {festival?.map((elt, i) => (
-                            <div onClick={() => setInputedUser({ ...inputedUser, festival:elt.id })} key={i} className={`festival ${inputedUser.festival === elt.id ? ('active') : ('')}`}>
-                                {elt.title}
-                            </div>
-                        ))}
                     </div>
                     <button className="btnPrimary" disabled={loading ? true : false}>
                         {loading ? (

@@ -20,24 +20,27 @@ const PostContainer = styled.section`
   }
 }
 `
-export default function PostDetail({findPost, currentUserLikes}) {
+export default function PostDetail({findPost}) {
     const [currentUser, setCurrentUser] = useState(null)
     const [cookies] = useCookies(['user'])
     const [userLikes, setUserLikes] = useState([])
 
     useEffect(() => {
-        let likesList = []
-
-        setCurrentUser(cookies.user)
-        
-        if(currentUserLikes){
-            currentUserLikes.map((elt,i) => {
-              likesList.push(elt.post_id)
-            })
-          }
-          
-          setUserLikes(likesList)
-    }, [cookies.user, currentUserLikes])
+      setCurrentUser(cookies.user)
+      {cookies.user &&
+        fetch(`/api/post/userLikes`, {
+          method: 'POST',
+          headers:{
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: cookies.user?.id
+          })
+        }).then(res => res.json()).then(res => {
+          setUserLikes(res.likes)
+        })
+      }
+    }, [setUserLikes, cookies.user])
   return (
     <PostContainer>
       <Head>
@@ -48,7 +51,7 @@ export default function PostDetail({findPost, currentUserLikes}) {
         />
       </Head>
       <div className='postContainer'>
-        <Post data={findPost} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
+        <Post data={findPost} currentUserId={currentUser?.id} setUserLikes={setUserLikes} userLikes={userLikes}/>
       </div>
     </PostContainer>
   )
@@ -56,7 +59,6 @@ export default function PostDetail({findPost, currentUserLikes}) {
 
 export const getServerSideProps = async (context) => {
     let currentPost = context.query.post
-    const cookie = parseCookies(context.req)
 
     currentPost = parseInt(currentPost)
     try{
@@ -106,30 +108,6 @@ export const getServerSideProps = async (context) => {
                 }
               }
         })
-        if(context.res){
-            if(cookie.user){
-                const parsedUser = JSON.parse(cookie.user)
-                const user = await prisma.user.findUnique({
-                    where: {
-                    pseudo: parsedUser.pseudo,
-
-                    },
-                    select:{
-                      likes:{
-                          select:{
-                          post_id:true
-                          }
-                      }
-                    }
-                })
-                return{
-                    props:{
-                    findPost,
-                    currentUserLikes: user.likes
-                    }
-                }
-            }
-        }
 
         return{
             props:{
