@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import toast from 'react-hot-toast';
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
@@ -237,6 +237,13 @@ export default function Signin () {
             console.log(error)
         }
     }
+
+    useEffect(() => {
+        if(cookies.user){
+            router.push('/')
+            toast.error('Vous êtes déjà connecté')
+        }
+    }, [cookies.user, router])
     return(
         <AuthStyle>
             <Head>
