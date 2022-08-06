@@ -5,6 +5,7 @@ import { device } from '../../styles/device.css'
 import { useRouter } from 'next/router'
 import { useCookies } from 'react-cookie'
 import { toast } from 'react-hot-toast'
+import Head from 'next/head'
 
 const AddPostStyle = styled.section`
     display: flex;
@@ -151,7 +152,14 @@ function AddPost({festival}) {
     }, [cookies.user, router])
   return (
     <AddPostStyle>
-        <h1>Ajouter un post</h1>
+         <Head>
+            <title>Festiv-App | Ajouter une publication</title>
+            <meta
+                name="description"
+                content="Partager vos meilleurs moments depuis la page 'ajouter une publication'"
+            />
+        </Head>
+        <h1>Ajouter une publication</h1>
         <div className='addPostContainer'>
         <form onSubmit={handleAddPost}>
             <label>Description</label>

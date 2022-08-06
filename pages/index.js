@@ -218,10 +218,7 @@ export default function Home() {
     <PostContainer>
       <Head>
         <title>Festiv-App</title>
-        <meta
-            name="description"
-            content="Festiv-App"
-        />
+        <meta name="description" content="" />
       </Head>
       <div className='postContainer'>
         {currentUser && (
