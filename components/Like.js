@@ -26,14 +26,15 @@ const LikesStyle = styled.div`
     }
 `
 
-export default function Like({liked, currentPost, currentUserId, likesCount, currentPostDescription, currentPostContent, ifNavigator, totalComments}) {
+export default function Like({setUserLikes, userLikes, liked, currentPostId, currentUserId, likesCount, currentPostDescription, currentPostContent, ifNavigator, totalComments}) {
     const router = useRouter()
     const [isLiked, setIsLiked] = useState(liked)
     const [totalLikes, setTotalLikes] = useState(likesCount)
-    
+
     useEffect(() => {
         setIsLiked(liked)
-    }, [liked])
+    }, [liked, setIsLiked, likesCount, setTotalLikes])
+
     const handleLike = async(e, currentPost, currentUserId) => {
         e.preventDefault()
         if(!currentUserId){
@@ -41,18 +42,16 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
             router.push('/auth/')
         }else{
             setIsLiked(!isLiked)
-            if(!isLiked){
-                setTotalLikes(totalLikes + 1)
-            }else{
-                setTotalLikes(totalLikes - 1)
-            }
+            setUserLikes(prevState => [ ...prevState, {post_id: currentPostId}])
+            setTotalLikes(isLiked ? totalLikes - 1 : totalLikes + 1)
+
             const res = await fetch(`/api/post/like`, {
                 method:'POST',
                 headers:{
                 'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                id: currentPost,
+                id: currentPostId,
                 currentUser: currentUserId
                 })
             })
@@ -73,11 +72,10 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
             })
         }
     }
-
     return (
     <LikesStyle>
             <div className='likesActions'>
-                <div onClick={(event) => handleLike(event, currentPost, currentUserId)}>{!isLiked ? (
+                <div onClick={(event) => handleLike(event, currentPostId, currentUserId)}>{!isLiked ? (
                     <svg className="heart-svg" viewBox="467 392 58 57" xmlns="http://www.w3.org/2000/svg">
                     <g className="Group" fill="none" transform="translate(467 392)">
                     <path d="M29.144 20.773c-.063-.13-4.227-8.67-11.44-2.59C7.63 28.795 28.94 43.256 29.143 43.394c.204-.138 21.513-14.6 11.44-25.213-7.214-6.08-11.377 2.46-11.44 2.59z" className="heart" fill="#AAB8C2"/>
@@ -163,9 +161,9 @@ export default function Like({liked, currentPost, currentUserId, likesCount, cur
                     </svg>
                 )}
                 </div>
-                {ifNavigator ? (<div className='share' onClick={(event) => handleShare(event, currentPost, currentPostContent, currentPostDescription)}>
+                {ifNavigator ? (<div className='share' onClick={(event) => handleShare(event, currentPostId, currentPostContent, currentPostDescription)}>
                     <Image src={'/post/share.svg'} alt="share" width={30} height={30} className="share-icon" />
-                </div>) : ('')}
+                </div>) : ('')} 
             </div>
             
             <div className='total'><span>{totalLikes} {totalLikes === 1 || totalLikes === 0 ? ('j\'aime') : ('j\'aimes')}</span>  <span>{totalComments} {totalComments === 1 || totalComments === 0 ? ('commentaire') : ('commentaires')}</span></div>

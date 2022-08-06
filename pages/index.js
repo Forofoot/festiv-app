@@ -1,16 +1,12 @@
 import Head from 'next/head'
-import { PrismaClient } from '@prisma/client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
-import { useRouter } from 'next/dist/client/router'
 import styled from 'styled-components'
-import { parseCookies } from "../helpers"
 import Post from '../components/Post'
 import { device } from '../styles/device.css'
 import Modal from '../components/Modal'
 import Link from 'next/link'
 import Image from 'next/image'
-import { set } from 'nprogress'
 
 const PostContainer = styled.section`
   .postContainer{
@@ -122,23 +118,53 @@ const PostContainer = styled.section`
     }
   }
 `
-export default function Home({post, currentUserLikes, festival}) {
-
+export default function Home() {
   const [currentUser, setCurrentUser] = useState(null)
   const [cookies] = useCookies(['user'])
-  const [userLikes, setUserLikes] = useState([])
   const [opened, setOpened] = useState()
   const [modalOptions, setModalOptions] = useState()
-  const [posts, setPosts] = useState(post)
+  const [posts, setPosts] = useState([])
   const [search, setSearch] = useState({
     searchContent: '',
   })
   const [searchResults, setSearchResults] = useState()
   const [loading, setLoading] = useState(false)
+  const [userLikes, setUserLikes] = useState([])
+  const [ifNavigator, setIfNavigator] = useState()
+
+  
+  useEffect(() => {
+    navigator.share ? setIfNavigator(true) : setIfNavigator(false)
+    {cookies.user &&
+      fetch(`api/post/userLikes`, {
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: cookies.user?.id
+        })
+      }).then(res => res.json()).then(res => {
+        setUserLikes(res.likes)
+      })
+    }
+  }, [setUserLikes, cookies.user, setPosts])
+
 
   useEffect(() => {
     setCurrentUser(cookies.user)
-  }, [cookies.user])
+    fetch(`api/post/fetchPosts`, {
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: cookies.user?.id
+      })
+    }).then(res => res.json()).then(res => {
+      setPosts(res)
+    })
+  }, [cookies.user, setPosts])
 
   const searchResult = async() => {
     setLoading(true)
@@ -171,11 +197,12 @@ export default function Home({post, currentUserLikes, festival}) {
             content="Festiv-App"
         />
       </Head>
-      <Modal profileId={currentUser?.id} festival={festival} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions} setPosts={setPosts}/>  
       <div className='postContainer'>
-        {currentUser && 
-          <p className='btnPrimary' onClick={() => {setOpened(true), setModalOptions('addPost')}}><span>Ajouter un post</span></p>
-        }
+        <Link href={'/post/addPost'}>
+          <a>
+            <p className='btnPrimary'><span>Ajouter un post</span></p>
+          </a>
+        </Link>
         <div className='searchBar'>
           <div className='searchIcon'>
             <Image src='/search/search.svg' alt='Rechercher' width={20} height={20}/>
@@ -213,94 +240,9 @@ export default function Home({post, currentUserLikes, festival}) {
           </div>
         </div>
         {posts.map((elt, i) =>(
-            <Post key={i} data={elt} currentUserId={currentUser?.id} currentUserLikes={currentUserLikes}/>
+          <Post setUserLikes={setUserLikes} setPosts={setPosts} ifNavigator={ifNavigator} userLikes={userLikes} key={i} data={elt} currentUserId={currentUser?.id}/>
         ))}
       </div>
     </PostContainer>
   )
-}
-
-export async function getServerSideProps({req, res}){
-  const cookie = parseCookies(req)
-  const prisma = new PrismaClient()
-  const data = await prisma.post.findMany({
-    orderBy:{
-      updatedAt:'desc'
-    },
-    select:{
-      id:true,
-      content:true,
-      image:true,
-      user:{
-        select:{
-          pseudo:true,
-          avatar:true
-        }
-      },
-      festival:{
-        select:{
-          title:true
-        }
-      },
-      comments:{
-        select:{
-          content: true,
-          updatedAt:true,
-          user:{
-            select:{
-              pseudo:true,
-              avatar:true
-            }
-          }
-        },
-        take:2,
-        orderBy:{
-          updatedAt:'desc'
-        }
-      },
-      likes:{
-        select:{
-          user:{
-            select:{
-              pseudo:true
-            }
-          }
-        }
-      }
-    }
-  })
-
-  const festival = await prisma.festival.findMany()
-  
-  if(res){
-    if(cookie.user){
-      const parsedUser = JSON.parse(cookie.user)
-      const user = await prisma.user.findUnique({
-        where: {
-          pseudo: parsedUser.pseudo,
-
-        },
-        select:{
-          likes:{
-            select:{
-              post_id:true
-            }
-          }
-        }
-      })
-      return{
-        props:{
-          post: data,
-          currentUserLikes: user.likes,
-          festival
-        }
-      }
-    }
-  }
-  return{
-    props:{
-      post: data,
-      festival
-    }
-  }
 }

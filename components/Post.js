@@ -210,9 +210,7 @@ const PostStyle = styled.div`
     }
 `
 
-export default function Post({data, currentUserId, currentUserLikes}) {
-    const [userLikes, setUserLikes] = useState([])
-    const [ifNavigator, setIfNavigator] = useState()
+export default function Post({setUserLikes, ifNavigator, userLikes, data, currentUserId}) {
     const [loading, setLoading] = useState(false)
     const router = useRouter()
     const handleAddComment = async(e,id) => {
@@ -241,9 +239,6 @@ export default function Post({data, currentUserId, currentUserLikes}) {
         }
     }
 
-    useEffect(() => {
-      navigator.share ? (setIfNavigator(true)) : (setIfNavigator(false))
-    }, [])
     return (
         <PostStyle>
           <div className='post'>
@@ -297,7 +292,7 @@ export default function Post({data, currentUserId, currentUserLikes}) {
               <p className='description'>{data.content}</p>
 
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
-                  <Like currentPost={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={currentUserLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator} totalComments={data.comments?.length}/>
+                  <Like setUserLikes={setUserLikes} userLikes={userLikes} currentPostId={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={userLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator} totalComments={data.comments?.length}/>
               </div>
               
               {/*<p>{data.festival?.title}</p>*/}
