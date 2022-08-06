@@ -26,8 +26,6 @@ export default function PostDetail({findPost}) {
     const [cookies] = useCookies(['user'])
     const [userLikes, setUserLikes] = useState([])
     const router = useRouter()
-
-    console.log(findPost)
     useEffect(() => {
       if(cookies.user){
         setCurrentUser(cookies.user)
@@ -70,61 +68,76 @@ export default function PostDetail({findPost}) {
 
 export const getServerSideProps = async (context) => {
     let currentPost = context.query.post
-
-    currentPost = parseInt(currentPost)
+    if(typeof currentPost === 'string'){
+      currentPost = parseInt(currentPost)
+    }
     try{
-        const prisma = new PrismaClient()
+      const prisma = new PrismaClient()
+
+      if(typeof currentPost === 'number'){
+        if(isNaN(currentPost)){
+          return {
+            props: {
+              findPost: null
+            }
+          }
+        }
         const findPost = await prisma.post.findUnique({
-            where:{
-                id:currentPost
-            },
-            select:{
-                id:true,
-                content:true,
-                image:true,
-                user:{
-                  select:{
-                    pseudo:true,
-                    avatar:true
-                  }
-                },
-                festival:{
-                  select:{
-                    title:true
-                  }
-                },
-                comments:{
-                  select:{
-                    content: true,
-                    updatedAt:true,
-                    user:{
-                      select:{
-                        pseudo:true,
-                        avatar:true
-                      }
+          where:{
+              id:currentPost
+          },
+          select:{
+              id:true,
+              content:true,
+              image:true,
+              user:{
+                select:{
+                  pseudo:true,
+                  avatar:true
+                }
+              },
+              festival:{
+                select:{
+                  title:true
+                }
+              },
+              comments:{
+                select:{
+                  content: true,
+                  updatedAt:true,
+                  user:{
+                    select:{
+                      pseudo:true,
+                      avatar:true
                     }
-                  },
-                  orderBy:{
-                    updatedAt:'desc'
                   }
                 },
-                likes:{
-                  select:{
-                    user:{
-                      select:{
-                        pseudo:true
-                      }
+                orderBy:{
+                  updatedAt:'desc'
+                }
+              },
+              likes:{
+                select:{
+                  user:{
+                    select:{
+                      pseudo:true
                     }
                   }
                 }
               }
-            })
-
-        return{
-            props:{
-                findPost
             }
+        })
+        return{
+          props:{
+              findPost
+          }
         }
+      }
+      return{
+        props:{
+          findPost:null
+        }
+      }
     }catch(e){
         console.log(e)
     }
