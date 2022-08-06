@@ -13,9 +13,9 @@ export default async function handler(
                 "OR":[
                 {
                     user:{
-                        followers:{
+                        followings:{
                             some:{
-                                following_id:user_id
+                                follower_id:user_id
                             }
                         }
                     }
