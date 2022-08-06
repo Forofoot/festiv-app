@@ -178,13 +178,16 @@ export default function Navbar() {
   const router = useRouter()
 
   useEffect(() => {
-    setCurrentUser(cookies.user)
+    if(cookies.user){
+      setCurrentUser(cookies.user)
+    }
   }, [cookies.user])
   
   const logout = (e) =>{
     e.preventDefault()
     setCurrentUser(null)
     removeCookie('user',  {path: '/'})
+    router.replace(router.asPath)
     toast.success('Déconnecté')
   }
   return (

@@ -20,6 +20,24 @@ const PostContainer = styled.section`
     @media ${device.laptop}{
       padding: 140px 40px 40px 40px;
     }
+    .notLogged{
+      a{
+        color: var(--secondary);
+        text-decoration: underline;
+      }
+    }
+    .loadPost{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      .loader{
+        width: 30%;
+        &::before{
+          left: -150px;
+        }
+      }
+    }
     .btnPrimary{
       position: fixed;
       left: 50%;
@@ -129,6 +147,7 @@ export default function Home() {
   })
   const [searchResults, setSearchResults] = useState()
   const [loading, setLoading] = useState(false)
+  const [loadingPosts, setLoadingPosts] = useState(true)
   const [userLikes, setUserLikes] = useState([])
   const [ifNavigator, setIfNavigator] = useState()
 
@@ -152,18 +171,25 @@ export default function Home() {
 
 
   useEffect(() => {
-    setCurrentUser(cookies.user)
-    fetch(`api/post/fetchPosts`, {
-      method: 'POST',
-      headers:{
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_id: cookies.user?.id
+    if(cookies.user){
+      setCurrentUser(cookies.user)
+      fetch(`api/post/fetchPosts`, {
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: cookies.user?.id
+        })
+      }).then(res => res.json()).then(res => {
+        setPosts(res)
+        setLoadingPosts(false)
       })
-    }).then(res => res.json()).then(res => {
-      setPosts(res)
-    })
+    }else{
+      setPosts([])
+      setCurrentUser(null)
+      setLoadingPosts(false)
+    }
   }, [cookies.user, setPosts])
 
   const searchResult = async() => {
@@ -242,9 +268,30 @@ export default function Home() {
           )}
           </div>
         </div>
-        {posts.map((elt, i) =>(
-          <Post setUserLikes={setUserLikes} setPosts={setPosts} ifNavigator={ifNavigator} userLikes={userLikes} key={i} data={elt} currentUserId={currentUser?.id}/>
-        ))}
+        {posts.length > 0 ? (
+            <>
+            {posts.map((elt, i) =>(
+              <Post setUserLikes={setUserLikes} setPosts={setPosts} ifNavigator={ifNavigator} userLikes={userLikes} key={i} data={elt} currentUserId={currentUser?.id}/>
+            ))}
+            </>
+        ) : (
+          <>
+          {loadingPosts ? (
+            <div className='loadPost'>
+              <span className="loader"></span>
+            </div>
+          ) : (
+            <>
+            <h1>Aucune publication</h1>
+            
+            {!currentUser && (
+              <h2 className='notLogged'>Veuillez vous connecter <Link href={'/auth/'}><a>ici</a></Link></h2>
+            )}
+            </>
+          )}
+          </>
+        )}
+        
       </div>
     </PostContainer>
   )
