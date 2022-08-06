@@ -31,7 +31,7 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
             toast.remove()
             setCookie("user", JSON.stringify(data), {
                 path: '/',
-                maxAge: 3600, // Expires after 1hr
+                maxAge: 2592000,
                 sameSite: true,
             })
             toast.success('Profil modifié')

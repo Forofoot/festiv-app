@@ -81,12 +81,6 @@ const ModalStyle = styled.div`
                 font-weight: bold;
                 color: var(--secondary);
             }
-            .limitedTo{
-                width: 100%;
-                font-size: 0.875rem;
-                color: var(--greyDark);
-                text-align: right;
-            }
         }
     }
 `
@@ -195,7 +189,6 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
                 <form onSubmit={handleChangeDescription}>
                     <label>Description</label>   
                     <textarea value={inputedUser.description || ''} onChange={(e) => setInputedUser({ ...inputedUser, description:e.target.value })}></textarea> 
-                    <p className='limitedTo'>Limité à 100 caractères</p>
                     <button className="btnPrimary" disabled={loading ? true : false}>
                         {loading ? (
                             <span className='loader'></span>

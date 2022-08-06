@@ -198,11 +198,14 @@ export default function Home() {
         />
       </Head>
       <div className='postContainer'>
-        <Link href={'/post/addPost'}>
-          <a>
-            <p className='btnPrimary'><span>Ajouter un post</span></p>
-          </a>
-        </Link>
+        {currentUser && (
+          <Link href={'/post/addPost'}>
+            <a>
+              <p className='btnPrimary'><span>Ajouter un post</span></p>
+            </a>
+          </Link>
+        )}
+        
         <div className='searchBar'>
           <div className='searchIcon'>
             <Image src='/search/search.svg' alt='Rechercher' width={20} height={20}/>

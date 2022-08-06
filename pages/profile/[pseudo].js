@@ -211,68 +211,20 @@ export default function Profile({profile, currentUserFollows}){
     const [opened, setOpened] = useState(false)
     const router = useRouter()
 
-    {/*
-    const handleShowFollowings = async(e) =>{
-        setCurrentShow('showFollowings')
-        try{
-            if(!currentFollowings.followings){
-                const res = await fetch('/api/profile/showFollowings', {
-                    method:'POST',
-                    headers:{
-                        'Content-Type':  'application/json'
-                    },
-                    body:JSON.stringify({
-                        user: profile.id
-                    })
-                })
-                const data = await res.json()
-                if(res.ok){
-                    if(data){
-                        setCurrentFollowings(data)
-                    }
-                }else{
-                    setCurrentShow(null)
-                    toast.error('Erreur')
-                }
-            }
-        }catch(e){
-            console.log(e)
-        }
-    }
-
-    const handleShowFollowers = async(e) =>{
-        setCurrentShow('showFollowers')
-        try{
-            if(!currentFollowers.followers){
-                const res = await fetch('/api/profile/showFollowers', {
-                    method:'POST',
-                    headers:{
-                        'Content-Type':  'application/json'
-                    },
-                    body:JSON.stringify({
-                        user: profile.id
-                    })
-                })
-                const data = await res.json()
-                if(res.ok){
-                    if(data){
-                        setCurrentFollowers(data)
-                    }
-                }else{
-                    setCurrentShow(null)
-                    toast.error('Erreur')
-                }
-            }
-        }catch(e){
-            console.log(e)
-        }
-    }
-    */}
     useEffect(() => {
+
+        if(cookies.user){
+            setCurrentUser(cookies.user)
+        }
+
+        if(!profile){
+            router.push('/')
+            toast.error('Utilisateur introuvable')
+        }
+
         let followersList = []
         let followsList = []
 
-        setCurrentUser(cookies.user)
         setCurrentShow()
         setCurrentFollowers([])
         setCurrentFollowings([])
@@ -299,146 +251,150 @@ export default function Profile({profile, currentUserFollows}){
                     content="Voici la page connexion de Festiv-app"
                 />
             </Head>
-            <Modal profileDescription={profile.description} profileId={profile?.id} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
-            <ProfileStyle>
-                <div className={`profileContainer ${currentOptions ? 'modifyContainer' : ''}`}>
-                    {profile?.pseudo  == currentUser?.pseudo && (
-                        <p className="btnPrimary modify" onClick={() => setCurrentOptions(!currentOptions)}>
-                            <span>{currentOptions ? 'Retour' : 'Modifier'}</span>
-                        </p>
-                    )}
-                    {profile?.pseudo ? (
-                        <>
-                            {currentOptions ? (
-                                <Modify previewImage={previewImage} setpreviewImage={setpreviewImage} profileAvatar={profile?.avatar} profilePseudo={profile?.pseudo} profileId={profile?.id} setCurrentUser={setCurrentUser} setOpened={setOpened} profileFirstName={profile?.firstName} profileLastName={profile?.lastName} profileEmail={profile?.email} profileDescription={profile?.description} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
-                                ) : (
-                            <>        
-                            <div className="infoBlock">
-                                <h1>{profile?.pseudo} </h1>
-
-                                <div className="profilePicture">
-                                    {profile.avatar ? (
-                                        <Image
-                                            src={`${profile?.avatar}`}
-                                            alt="Photo de profil"
-                                            width={217}
-                                            height={217}
-                                            objectFit="cover"
-                                        />
+            {profile  && 
+            <>
+                <Modal profileDescription={profile.description} profileId={profile?.id} setOpened={setOpened} isopened={opened} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
+                <ProfileStyle>
+                    <div className={`profileContainer ${currentOptions ? 'modifyContainer' : ''}`}>
+                        {profile?.pseudo  == currentUser?.pseudo && (
+                            <p className="btnPrimary modify" onClick={() => setCurrentOptions(!currentOptions)}>
+                                <span>{currentOptions ? 'Retour' : 'Modifier'}</span>
+                            </p>
+                        )}
+                        {profile?.pseudo ? (
+                            <>
+                                {currentOptions ? (
+                                    <Modify previewImage={previewImage} setpreviewImage={setpreviewImage} profileAvatar={profile?.avatar} profilePseudo={profile?.pseudo} profileId={profile?.id} setCurrentUser={setCurrentUser} setOpened={setOpened} profileFirstName={profile?.firstName} profileLastName={profile?.lastName} profileEmail={profile?.email} profileDescription={profile?.description} setModalOptions={setModalOptions} modalOptions={modalOptions}/>
                                     ) : (
-                                        <Image
-                                            src={'/profile/avatar.webp'}
-                                            alt="Photo de profil"
-                                            width={217}
-                                            height={217}
-                                            objectFit="cover"
-                                        />
-                                    )} 
+                                <>        
+                                <div className="infoBlock">
+                                    <h1>{profile?.pseudo} </h1>
+
+                                    <div className="profilePicture">
+                                        {profile.avatar ? (
+                                            <Image
+                                                src={`${profile?.avatar}`}
+                                                alt="Photo de profil"
+                                                width={217}
+                                                height={217}
+                                                objectFit="cover"
+                                            />
+                                        ) : (
+                                            <Image
+                                                src={'/profile/avatar.webp'}
+                                                alt="Photo de profil"
+                                                width={217}
+                                                height={217}
+                                                objectFit="cover"
+                                            />
+                                        )} 
+                                    </div>
+
+                                    {!currentUserFollows ? (
+                                        <>
+                                            <div className="followStats">
+                                                <div className="following">
+                                                    <p>{profile?.followings.length}</p>
+                                                    <p>Abonnés</p>
+                                                </div>
+                                                <span className="separator"></span>
+                                                <div className="follower">
+                                                    <p>{profile?.followers.length}</p>
+                                                    <p>Abonnements</p>
+                                                </div>
+                                            </div>
+
+                                            <h2>{profile.firstName} {profile.lastName}</h2>
+                                            {profile?.description ? (
+                                                <p>{profile.description}</p>
+                                            ) : (
+                                                <p>Aucune description</p>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id} profileDescription={profile.description} profileFirstName={profile.firstName} profileLastName={profile.lastName} followersLength={profile?.followers.length}
+                                        followingsLength={profile?.followings.length}/>
+                                    )}
+                                    {profile.posts?.length ? (
+                                    <div className="postContainer">
+                                        {profile.posts.map((elt,i) => (
+                                            <div key={i} className="postBlock">
+                                                <Link href={`/details/${elt.id}`}>
+                                                    <a>
+                                                        <Image src={`${elt.image}`} alt={"Post"} layout="fill" objectFit="cover"/>
+                                                    </a>
+                                                </Link>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    ) : (
+                                        <p>Aucun post</p>
+                                    )
+                                }
+                                    
                                 </div>
 
-                                {!currentUserFollows ? (
+                                {currentShow == 'showFollowings' && (
                                     <>
-                                        <div className="followStats">
-                                            <div className="following">
-                                                <p>{profile?.followings.length}</p>
-                                                <p>Abonnés</p>
-                                            </div>
-                                            <span className="separator"></span>
-                                            <div className="follower">
-                                                <p>{profile?.followers.length}</p>
-                                                <p>Abonnements</p>
-                                            </div>
-                                        </div>
-
-                                        <h2>{profile.firstName} {profile.lastName}</h2>
-                                        {profile?.description ? (
-                                            <p>{profile.description}</p>
+                                        {currentFollowings ? (
+                                            <>
+                                                {currentFollowings.followings?.map((elt,i) => (
+                                                    <div key={i}>
+                                                        <Link href={`/profile/${elt.follower.pseudo}`}>
+                                                            <a>
+                                                                {elt.follower.pseudo}
+                                                            </a>
+                                                        </Link>
+                                                    </div>
+                                                ))}
+                                            </>
                                         ) : (
-                                            <p>Aucune description</p>
+                                            <>
+                                                Chargement en cours...
+                                            </>
                                         )}
                                     </>
-                                ) : (
-                                    <Follow profileResult={profile.id} follower={userFollowers.includes(profile.id)} following={userFollows.includes(profile.id)} currentUserId={currentUser?.id} profileDescription={profile.description} profileFirstName={profile.firstName} profileLastName={profile.lastName} followersLength={profile?.followers.length}
-                                    followingsLength={profile?.followings.length}/>
                                 )}
-                                {profile.posts?.length ? (
-                                <div className="postContainer">
-                                    {profile.posts.map((elt,i) => (
-                                        <div key={i} className="postBlock">
-                                            <Link href={`/details/${elt.id}`}>
-                                                <a>
-                                                    <Image src={`${elt.image}`} alt={"Post"} layout="fill" objectFit="cover"/>
-                                                </a>
-                                            </Link>
-                                        </div>
-                                    ))}
-                                </div>
-                                ) : (
-                                    <p>Aucun post</p>
-                                )
-                            }
-                                
-                            </div>
 
-                            {currentShow == 'showFollowings' && (
-                                <>
-                                    {currentFollowings ? (
-                                        <>
-                                            {currentFollowings.followings?.map((elt,i) => (
-                                                <div key={i}>
-                                                    <Link href={`/profile/${elt.follower.pseudo}`}>
-                                                        <a>
-                                                            {elt.follower.pseudo}
-                                                        </a>
-                                                    </Link>
-                                                </div>
-                                            ))}
-                                        </>
-                                    ) : (
-                                        <>
-                                            Chargement en cours...
-                                        </>
-                                    )}
-                                </>
+                                {currentShow == 'showFollowers' && (
+                                    <>
+                                        {currentFollowers ? (
+                                            <>
+                                                {currentFollowers.followers?.map((elt,i) => (
+                                                    <div key={i}>
+                                                        <Link href={`/profile/${elt.following.pseudo}`} onClick={() => handleRemoveAll()}>
+                                                            <a>
+                                                                {elt.following.pseudo}
+                                                            </a>
+                                                        </Link>
+                                                    </div>
+                                                ))}
+                                            </>
+                                        ) : (
+                                            <>
+                                                Chargement en cours...
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </>
+                                    
                             )}
-
-                            {currentShow == 'showFollowers' && (
-                                <>
-                                    {currentFollowers ? (
-                                        <>
-                                            {currentFollowers.followers?.map((elt,i) => (
-                                                <div key={i}>
-                                                    <Link href={`/profile/${elt.following.pseudo}`} onClick={() => handleRemoveAll()}>
-                                                        <a>
-                                                            {elt.following.pseudo}
-                                                        </a>
-                                                    </Link>
-                                                </div>
-                                            ))}
-                                        </>
-                                    ) : (
-                                        <>
-                                            Chargement en cours...
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </>
-                                
+                            </>
+                        ) : (
+                            <>
+                                <h1>Aucun profil ne correspond</h1>
+                                <Link href='/'>
+                                    <a>
+                                        Retour au menu
+                                    </a>
+                                </Link>
+                            </>
                         )}
-                        </>
-                    ) : (
-                        <>
-                            <h1>Aucun profil ne correspond</h1>
-                            <Link href='/'>
-                                <a>
-                                    Retour au menu
-                                </a>
-                            </Link>
-                        </>
-                    )}
-                </div>
-            </ProfileStyle>
+                    </div>
+                </ProfileStyle>
+            </>
+            }
         </>
     )
 }

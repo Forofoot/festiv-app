@@ -175,7 +175,7 @@ export default function Signin () {
                 if(res.ok){
                     setCookie("user", JSON.stringify(data), {
                         path: '/',
-                        maxAge: 3600, // Expires after 1hr
+                        maxAge: 2592000,
                         sameSite: true,
                         secure: true
                     })
@@ -222,7 +222,7 @@ export default function Signin () {
                     toast.success('Compte créé')
                     setCookie("user", JSON.stringify(data), {
                         path: '/',
-                        maxAge: 3600, // Expires after 1hr
+                        maxAge: 2592000,
                         sameSite: true,
                         secure: true
                     })
