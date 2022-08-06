@@ -32,9 +32,13 @@ const PostContainer = styled.section`
       align-items: center;
       width: 100%;
       .loader{
-        width: 30%;
+        @media ${device.laptop}{
+          width: 30%;
+        }
         &::before{
-          left: -150px;
+          @media ${device.laptop}{
+            left: -150px;
+          }
         }
       }
     }
