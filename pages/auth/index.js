@@ -241,7 +241,6 @@ export default function Signin () {
     useEffect(() => {
         if(cookies.user){
             router.push('/')
-            toast.error('Vous êtes déjà connecté')
         }
     }, [cookies.user, router])
     return(

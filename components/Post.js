@@ -70,8 +70,20 @@ const PostStyle = styled.div`
         font-size: 0.875rem;
       }
     }
+    .delete{
+      width: 35px;
+      height: 35px;
+      position: absolute;
+      top:30px;
+      right: 25px;
+      cursor: pointer;
+    }
+    .festival{
+      color: var(--secondary);
+      font-weight: bold;
+    }
     .description{
-      margin-bottom: 30px;
+      margin-bottom: 15px;
     }
     .actionBtn{
       display: flex;
@@ -86,7 +98,7 @@ const PostStyle = styled.div`
     .comments{
       
     position: relative;
-      padding-top: 15px;
+      padding-top: 35px;
       border-top: 1px solid var(--primary);
       .commentHead{
         font-weight: bold;
@@ -213,6 +225,8 @@ const PostStyle = styled.div`
 export default function Post({setUserLikes, ifNavigator, userLikes, data, currentUserId}) {
     const [loading, setLoading] = useState(false)
     const router = useRouter()
+    console.log(currentUserId)
+    console.log(data.post_id)
     const handleAddComment = async(e,id) => {
         setLoading(true)
         e.preventDefault()
@@ -237,6 +251,25 @@ export default function Post({setUserLikes, ifNavigator, userLikes, data, curren
             router.replace(router.asPath)
           }
         }
+    }
+
+    const handleDeletePost = async(id) => {
+      toast.loading('Suppression en cours...')
+      const res = await fetch(`/api/post/deletePost`, {
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id:id,
+          currentUserId: currentUserId
+        })
+      })
+      if(res.ok){
+        toast.remove()
+        toast.success('Suppression effectuée avec succès')
+        router.push('/')
+      }
     }
 
     return (
@@ -290,66 +323,79 @@ export default function Post({setUserLikes, ifNavigator, userLikes, data, curren
                 </p>
               </div>
               <p className='description'>{data.content}</p>
-
+              <p className='festival'>#{data.festival.title}</p>
+              {router.pathname === `/details/[post]` && (
+                <>
+                  {data.user_id  === currentUserId && (
+                    <div onClick= {() => handleDeletePost(data.id)} className='delete'>
+                      <Image
+                        src={'/post/delete.svg'}
+                        alt='Supprimer la publication'
+                        width={35}
+                        height={35}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
               <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
                   <Like setUserLikes={setUserLikes} userLikes={userLikes} currentPostId={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={userLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator} totalComments={data.comments?.length}/>
               </div>
               
-              {/*<p>{data.festival?.title}</p>*/}
               {router.pathname === "/" && (
                 <>
-                {!data.comments?.length ? (
-                  <p>Il n&apos;y a aucun commentaire.</p>
-                ) : (
                   <div className='comments'>
-                  <p className='commentHead'>Commentaires</p>
-                  <div className='userComments'>
-                  {data.comments?.map((com,index) => (
-                      <div className='userComment' key={index}>
-                        <div className='userCommentsImg'>
-                        {com.user?.avatar ? (
-                            <Image
-                              src={com?.user.avatar}
-                              alt={`Photo de ${com?.user.pseudo}`}
-                              width={35}
-                              height={35}
-                              objectFit="cover"
-                            />
-                          ) : (
-                            <Image
-                              src={'/profile/avatar.webp'}
-                              alt="Avatar"
-                              width={35}
-                              height={35}
-                              objectFit='cover'
-                            />
-                          )}
-                        </div>
-                        <div className='userCommentContent'>
-                          <div>
-                            <Link href={`/profile/${com.user?.pseudo}`}>
-                            <a>
-                              <span>{com.user?.pseudo}</span>
-                            </a>
-                            </Link>
-                            <div className='userCommentText'>
-                              <p>
-                                {com?.content}
-                              </p>
+                  {!data.comments?.length ? (
+                    <p>Il n&apos;y a aucun commentaire.</p>
+                  ) : (
+                    <>
+                      <p className='commentHead'>Commentaires</p>
+                      <div className='userComments'>
+                        {data.comments?.map((com,index) => (
+                            <div className='userComment' key={index}>
+                              <div className='userCommentsImg'>
+                              {com.user?.avatar ? (
+                                  <Image
+                                    src={com?.user.avatar}
+                                    alt={`Photo de ${com?.user.pseudo}`}
+                                    width={35}
+                                    height={35}
+                                    objectFit="cover"
+                                  />
+                                ) : (
+                                  <Image
+                                    src={'/profile/avatar.webp'}
+                                    alt="Avatar"
+                                    width={35}
+                                    height={35}
+                                    objectFit='cover'
+                                  />
+                                )}
+                              </div>
+                              <div className='userCommentContent'>
+                                <div>
+                                  <Link href={`/profile/${com.user?.pseudo}`}>
+                                  <a>
+                                    <span>{com.user?.pseudo}</span>
+                                  </a>
+                                  </Link>
+                                  <div className='userCommentText'>
+                                    <p>
+                                      {com?.content}
+                                    </p>
+                                  </div>
+                                </div>
+                                <span className='date'><Moment locale="fr" date={com?.updatedAt} fromNow /></span>
+                              </div>
                             </div>
-                          </div>
-                          <span className='date'><Moment locale="fr" date={com?.updatedAt} fromNow /></span>
-                        </div>
+                        ))}
                       </div>
-                  ))}
-                  </div>
+                    </>
+                  )}
                 </div>
-                )}
               <Link href={`/details/${data.id}`}><a className='seeDetails'>Voir les détails</a></Link>
               </>
               )}
-              
-              {/*<p onClick={() => handleDeletePost(data.id)}>Supprimer</p>*/}
             </div>
           </div>
 
