@@ -31,6 +31,7 @@ export default async function handler(
                 id:true,
                 content:true,
                 image:true,
+                user_id:true,
                 user:{
                     select:{
                         pseudo:true,

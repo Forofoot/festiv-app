@@ -26,7 +26,9 @@ export default function PostDetail({findPost}) {
     const [cookies] = useCookies(['user'])
     const [userLikes, setUserLikes] = useState([])
     const router = useRouter()
+    const [ifNavigator, setIfNavigator] = useState()
     useEffect(() => {
+      navigator.share ? setIfNavigator(true) : setIfNavigator(false)
       if(cookies.user){
         setCurrentUser(cookies.user)
       }
@@ -56,7 +58,7 @@ export default function PostDetail({findPost}) {
       </Head>
       {findPost &&
         <div className='postContainer'>
-          <Post data={findPost} currentUserId={currentUser?.id} setUserLikes={setUserLikes} userLikes={userLikes}/>
+          <Post data={findPost} ifNavigator={ifNavigator} currentUserId={currentUser?.id} setUserLikes={setUserLikes} userLikes={userLikes}/>
         </div>
       }
     </PostContainer>
@@ -87,6 +89,7 @@ export const getServerSideProps = async (context) => {
               id:true,
               content:true,
               image:true,
+              user_id:true,
               user:{
                 select:{
                   pseudo:true,
