@@ -184,6 +184,17 @@ const PostStyle = styled.div`
       }
     }
   }
+  
+  .date{
+    font-weight: 400;
+    font-size: 0.725rem;
+    color: var(--greyDark);
+    &.postPublished{
+      width: 100%;
+      text-align: right;
+      margin-top: 10px;
+    }
+  }
   .userComment{
       display: flex;
       gap: 15px;
@@ -202,11 +213,6 @@ const PostStyle = styled.div`
           span{
             font-weight: bold;
           }
-        }
-        .date{
-          font-weight: 400;
-          font-size: 0.725rem;
-          color: var(--greyDark);
         }
         .userCommentText{
           max-width: 220px;
@@ -324,6 +330,7 @@ export default function Post({setUserLikes, ifNavigator, userLikes, data, curren
               </div>
               <p className='description'>{data.content}</p>
               <p className='festival'>#{data.festival.title}</p>
+              <span className='date postPublished'><Moment locale="fr" date={data.updatedAt} fromNow /></span>
               {router.pathname === `/details/[post]` && (
                 <>
                   {data.user_id  === currentUserId && (

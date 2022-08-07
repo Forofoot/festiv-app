@@ -90,6 +90,7 @@ export const getServerSideProps = async (context) => {
               content:true,
               image:true,
               user_id:true,
+              updatedAt:true,
               user:{
                 select:{
                   pseudo:true,
