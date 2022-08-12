@@ -258,7 +258,7 @@ export default function Signin () {
             />
 
             <div className="authContainer">
-                <h1>Créer un compte</h1>
+                <h1>{authMethod === 'signup' ? ('Créer un compte') : ('Se connecter')}</h1>
                 <div className="authNavigation">
                     <p onClick={() => setAuthMethod('signup')} className={`${authMethod === 'signup' ? ('active') : ('')}`}>Créer un compte</p>
                     <p onClick={() => setAuthMethod('signin')} className={`${authMethod === 'signin' ? ('active') : ('')}`}>Connexion</p>
