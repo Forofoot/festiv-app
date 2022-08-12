@@ -101,8 +101,6 @@ function Modal({setOpened, isopened, profileDescription,  profileId, modalOption
         setLoading(true)
         try{
             toast.loading('Chargement en cours')
-            console.log(inputedUser.newPassword)
-            console.log(inputedUser.confirmPassword)
             if(inputedUser.newPassword !== inputedUser.confirmPassword){
                 toast.remove()
                 toast.error('Mots de passes non identiques')

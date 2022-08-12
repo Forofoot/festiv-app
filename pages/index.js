@@ -7,6 +7,7 @@ import { device } from '../styles/device.css'
 import Modal from '../components/Modal'
 import Link from 'next/link'
 import Image from 'next/image'
+import toast from 'react-hot-toast'
 
 const PostContainer = styled.section`
   .postContainer{
@@ -173,6 +174,7 @@ export default function Home() {
     }
   }, [setUserLikes, cookies.user, setPosts])
 
+  
 
   useEffect(() => {
     if(cookies.user){
@@ -284,6 +286,7 @@ export default function Home() {
           ) : (
             <>
             <h1>Aucune publication</h1>
+            <span>Veuillez suivre <Link href={'/profile/Forofoot'}><a>Forofoot</a></Link> pour débloquer le contenu</span>
             
             {!currentUser && (
               <h2 className='notLogged'>Veuillez vous connecter <Link href={'/auth/'}><a>ici</a></Link></h2>

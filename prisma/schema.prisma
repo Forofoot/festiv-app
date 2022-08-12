@@ -19,9 +19,9 @@ model Post {
   image      String?
   imagePublicId    String?
   comments    Comment[]
-  festival    Festival?   @relation(fields: [festival_id], references: [id])
+  festival    Festival?   @relation(fields: [festival_id], references: [id], onDelete: Cascade)
   festival_id Int
-  user        User?       @relation(fields: [user_id], references: [id])
+  user        User?       @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id     Int
   likes       PostLiked[]
 }
@@ -33,7 +33,7 @@ model Comment {
   content   String
   post      Post?    @relation(fields: [post_id], references: [id], onDelete: Cascade)
   post_id   Int
-  user      User?    @relation(fields: [user_id], references: [id])
+  user      User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id   Int
 }
 
@@ -53,9 +53,9 @@ model Follow {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   follower_id Int
-  follower User? @relation("follower", fields: [follower_id], references: [id])
+  follower User? @relation("follower", fields: [follower_id], references: [id], onDelete: Cascade)
   following_id Int
-  following User? @relation("following", fields: [following_id], references: [id])
+  following User? @relation("following", fields: [following_id], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -83,8 +83,8 @@ model PostLiked {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   like      Boolean  @default(false)
-  post      Post?    @relation(fields: [post_id], references: [id])
+  post      Post?    @relation(fields: [post_id], references: [id], onDelete: Cascade)
   post_id   Int
-  user      User?    @relation(fields: [user_id], references: [id])
+  user      User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id   Int
 }

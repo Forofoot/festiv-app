@@ -25,7 +25,7 @@ const PostStyle = styled.div`
     flex-direction: column;
     @media ${device.laptop}{
       max-width: 840px;
-      height: 450px;
+      height: 480px;
       flex-direction: row;
     }
   }
@@ -231,8 +231,6 @@ const PostStyle = styled.div`
 export default function Post({setUserLikes, ifNavigator, userLikes, data, currentUserId}) {
     const [loading, setLoading] = useState(false)
     const router = useRouter()
-    console.log(currentUserId)
-    console.log(data.post_id)
     const handleAddComment = async(e,id) => {
         setLoading(true)
         e.preventDefault()
