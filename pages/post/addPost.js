@@ -174,7 +174,7 @@ function AddPost({festival}) {
                 <span>Changer de photo</span>
                 <input
                     onChange={handleChange}
-                    accept="images/*"
+                    accept="image/*"
                     type="file"
                     id='file-input'
                     name="avatar"

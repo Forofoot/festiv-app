@@ -109,7 +109,7 @@ export default function Modify({profileAvatar, previewImage, profilePseudo, prof
                     <span>Changer de photo</span>
                     <input
                         onChange={handleChange}
-                        accept="images/*"
+                        accept="image/*"
                         type="file"
                         id='file-input'
                         name="avatar"
