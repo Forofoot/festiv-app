@@ -65,6 +65,10 @@ export default createGlobalStyle`
     color: inherit;
   }
 
+  section{
+    min-height: calc(100vh - 90px);
+  }
+
   form{
     display: flex;
     align-items:center;

@@ -5,6 +5,7 @@ import {useEffect} from 'react'
 import Router, { useRouter } from 'next/router'
 import { GTM_ID } from '../lib/gtm'
 import * as gtag from '../lib/gtag'
+import '../styles/cookieconsent.css'
 import { Toaster } from "react-hot-toast";
 
 import NProgress from 'nprogress'; //nprogress module
