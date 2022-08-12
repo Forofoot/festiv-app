@@ -64,6 +64,7 @@ export default createGlobalStyle`
     text-decoration: none;
     color: inherit;
   }
+  
 
   section{
     min-height: calc(100vh - 90px);
