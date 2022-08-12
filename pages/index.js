@@ -57,8 +57,8 @@ function Landing() {
     </Head>
     <LandingStyle>
         <div>
-            <h1>Festiv'App</h1>
-            <p>Bienvenue sur <span>Festiv'App</span> la première application déstinée pour les plus grands passionnés de musiques !</p>
+            <h1>Festiv&apos;App</h1>
+            <p>Bienvenue sur <span>Festiv&apos;App</span> la première application déstinée pour les plus grands passionnés de musiques !</p>
             <Link href="/home">
                 <a className='btnPrimary'>
                     <span>
