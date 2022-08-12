@@ -33,7 +33,7 @@ export default function PostDetail({findPost}) {
         setCurrentUser(cookies.user)
       }
       if(!findPost){
-        router.push('/')
+        router.push('/home')
         toast.error('Publication introuvable')
       }
       {cookies.user &&

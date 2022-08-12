@@ -209,7 +209,7 @@ export default function Navbar() {
       <nav>
         <div className="navActions">
           <h1 onClick={() => setMenuActive(false)} className='logoDesktop'>
-            <Link href="/">
+            <Link href="/home">
               <a>
                 <Image
                   src={'/logo-desktop.webp'}
@@ -221,7 +221,7 @@ export default function Navbar() {
             </Link>
           </h1>
           <h1 onClick={() => setMenuActive(false)} className='logoMobile'>
-            <Link href="/">
+            <Link href="/home">
               <a>
                 <Image
                   src={'/logo-mobile.webp'}
@@ -241,8 +241,8 @@ export default function Navbar() {
           </div>
           <ul className="navActionsDesktop">
             <li onClick={() => setMenuActive(!menuActive)}>
-              <Link href="/">
-                <a className={`${router.pathname == "/" ? "active" : ""}`}>
+              <Link href="/home">
+                <a className={`${router.pathname == "/home" ? "active" : ""}`}>
                   Feed
                 </a>
               </Link>
@@ -253,15 +253,15 @@ export default function Navbar() {
             {currentUser ? (
              <>
               <li className="btnLink" onClick={(e) => {logout(e); setMenuActive(!menuActive)}}>
-                <Link href="/">
+                <Link href="/home">
                   <a className="btnPrimary">
                     <span>Se déconnecter</span>
                   </a>
                 </Link>
               </li>
               <li className="navActionsMobile" onClick={() => setMenuActive(!menuActive)}>
-                <Link href="/">
-                  <a className={`${router.pathname == "/" ? "active" : ""}`}>
+                <Link href="/home">
+                  <a className={`${router.pathname == "/home" ? "active" : ""}`}>
                     Feed
                   </a>
                 </Link>
@@ -300,8 +300,8 @@ export default function Navbar() {
               </Link>
             </li>
             <li onClick={() => setMenuActive(!menuActive)}>
-              <Link href="/">
-                <a className={`navActionsMobile ${router.pathname == "/" ? "active" : ""}`}  >
+              <Link href="/home">
+                <a className={`navActionsMobile ${router.pathname == "/home" ? "active" : ""}`}  >
                   Feed
                 </a>
               </Link>

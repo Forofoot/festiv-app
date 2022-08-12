@@ -272,7 +272,7 @@ export default function Post({setUserLikes, ifNavigator, userLikes, data, curren
       if(res.ok){
         toast.remove()
         toast.success('Suppression effectuée avec succès')
-        router.push('/')
+        router.push('/home')
       }
     }
 
@@ -297,7 +297,7 @@ export default function Post({setUserLikes, ifNavigator, userLikes, data, curren
               )}
               
             </div>
-            <div className={`postDetails ${router.pathname === "/" ? ('') : ('details')}`}>
+            <div className={`postDetails ${router.pathname === "/home" ? ('') : ('details')}`}>
               <div className='postedUser'>
                 <div>
                   {data.user?.avatar ? (
@@ -343,11 +343,11 @@ export default function Post({setUserLikes, ifNavigator, userLikes, data, curren
                   )}
                 </>
               )}
-              <div className={`actionBtn ${router.pathname === "/" ? ('') : ('details')}`}>
+              <div className={`actionBtn ${router.pathname === "/home" ? ('') : ('details')}`}>
                   <Like setUserLikes={setUserLikes} userLikes={userLikes} currentPostId={data.id} likesCount={data.likes?.length} currentPostContent={data.content} currentPostDescription={data.content} currentUserId={currentUserId} liked={userLikes?.some((like) => like.post_id == data.id)} ifNavigator={ifNavigator} totalComments={data.comments?.length}/>
               </div>
               
-              {router.pathname === "/" && (
+              {router.pathname === "/home" && (
                 <>
                   <div className='comments'>
                   {!data.comments?.length ? (
