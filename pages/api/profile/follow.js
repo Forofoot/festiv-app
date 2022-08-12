@@ -21,7 +21,7 @@ export default async function handler(
                     id: searchFollow.id
                 }
             })
-            res.status(200).json("lezgoooo")
+            res.status(200).json("Désabonné avec succès")
         }else{
             const createfollow = await prisma.follow.create({
                 data:{
@@ -29,7 +29,7 @@ export default async function handler(
                     following_id:id
                 }
             })
-            res.status(200).json("lezgoooo")
+            res.status(200).json("Abonné avec succès")
         }
         
     }catch(e){
