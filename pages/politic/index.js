@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Head from 'next/head'
 
 const PoliticStyle = styled.section`
     display: flex;
@@ -9,10 +10,19 @@ const PoliticStyle = styled.section`
     h1, h2{
         margin-bottom: 20px;
     }
+
 `
 
 function Politic() {
   return (
+    <>
+    <Head>
+        <title>Festiv-App | Politique de confidentialité</title>
+        <meta
+            name="description"
+            content="Découvrer notre politique de confidentialité"
+        />
+    </Head>
     <PoliticStyle>
         <div>
         <h1>Politique de confidentialité</h1>
@@ -59,28 +69,30 @@ function Politic() {
         </div>
 
 
-<div>
-<h2>Liens vers d&apos;autres sites web :</h2>
-Notre site web peut contenir des liens vers d&apos;autres sites web qui ne sont pas détenus ou contrôlés par nous. Sachez que nous ne sommes pas responsables de ces autres sites web ou des pratiques de confidentialité des tiers. Nous vous encourageons à être attentif lorsque vous quittez notre site web et à lire les déclarations de confidentialité de chaque site web susceptible de collecter des informations personnelles.
-</div>
+        <div>
+        <h2>Liens vers d&apos;autres sites web :</h2>
+        Notre site web peut contenir des liens vers d&apos;autres sites web qui ne sont pas détenus ou contrôlés par nous. Sachez que nous ne sommes pas responsables de ces autres sites web ou des pratiques de confidentialité des tiers. Nous vous encourageons à être attentif lorsque vous quittez notre site web et à lire les déclarations de confidentialité de chaque site web susceptible de collecter des informations personnelles.
+        </div>
 
 
-<div>
-<h2>Sécurité de l&apos;information :</h2>
-Nous sécurisons les informations que vous fournissez sur des serveurs informatiques dans un environnement contrôlé et sécurisé, protégé contre tout accès, utilisation ou divulgation non autorisés. Nous conservons des garanties administratives, techniques et physiques raisonnables pour nous protéger contre tout accès, utilisation, modification et divulgation non autorisés des données personnelles sous son contrôle et sa garde. Toutefois, aucune transmission de données sur Internet ou sur un réseau sans fil ne peut être garantie.
-</div>
+        <div>
+        <h2>Sécurité de l&apos;information :</h2>
+        Nous sécurisons les informations que vous fournissez sur des serveurs informatiques dans un environnement contrôlé et sécurisé, protégé contre tout accès, utilisation ou divulgation non autorisés. Nous conservons des garanties administratives, techniques et physiques raisonnables pour nous protéger contre tout accès, utilisation, modification et divulgation non autorisés des données personnelles sous son contrôle et sa garde. Toutefois, aucune transmission de données sur Internet ou sur un réseau sans fil ne peut être garantie.
+        </div>
 
-<div>
-<h2>Divulgation légale :</h2>
-Nous divulguerons toute information que nous collectons, utilisons ou recevons si la loi l&apos;exige ou l&apos;autorise, par exemple pour nous conformer à une citation à comparaître ou à une procédure judiciaire similaire, et lorsque nous pensons de bonne foi que la divulgation est nécessaire pour protéger nos droits, votre sécurité ou celle d&apos;autrui, enquêter sur une fraude ou répondre à une demande du gouvernement.
-</div>
+        <div>
+        <h2>Divulgation légale :</h2>
+        Nous divulguerons toute information que nous collectons, utilisons ou recevons si la loi l&apos;exige ou l&apos;autorise, par exemple pour nous conformer à une citation à comparaître ou à une procédure judiciaire similaire, et lorsque nous pensons de bonne foi que la divulgation est nécessaire pour protéger nos droits, votre sécurité ou celle d&apos;autrui, enquêter sur une fraude ou répondre à une demande du gouvernement.
+        </div>
 
-<div>
-<h2>Informations de contact :</h2>
-Si vous souhaitez nous contacter pour comprendre davantage la présente politique ou si vous souhaitez nous contacter concernant toute question relative aux droits individuels et à vos informations personnelles, vous pouvez envoyer un courriel à erwan.marques6@gmail.com.
-</div>
+        <div>
+        <h2>Informations de contact :</h2>
+        Si vous souhaitez nous contacter pour comprendre davantage la présente politique ou si vous souhaitez nous contacter concernant toute question relative aux droits individuels et à vos informations personnelles, vous pouvez envoyer un courriel à erwan.marques6@gmail.com.
+        </div>
 
     </PoliticStyle>
+    
+    </>
   )
 }
 
