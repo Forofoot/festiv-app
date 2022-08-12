@@ -218,7 +218,7 @@ export default function Profile({profile, currentUserFollows}){
         }
 
         if(!profile){
-            router.push('/')
+            router.push('/home')
             toast.error('Utilisateur introuvable')
         }
 
@@ -384,9 +384,9 @@ export default function Profile({profile, currentUserFollows}){
                         ) : (
                             <>
                                 <h1>Aucun profil ne correspond</h1>
-                                <Link href='/'>
+                                <Link href='/home'>
                                     <a>
-                                        Retour au menu
+                                        Retour à l&apos;accueil
                                     </a>
                                 </Link>
                             </>

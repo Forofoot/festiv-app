@@ -181,7 +181,7 @@ export default function Signin () {
                     })
                     toast.remove()
                     toast.success('Connecté')
-                    router.push('/')
+                    router.push('/home')
                 }else{
                     toast.remove()
                     toast.error('Erreur lors de la connexion au compte')
@@ -226,7 +226,7 @@ export default function Signin () {
                         sameSite: true,
                         secure: true
                     })
-                    router.push('/')
+                    router.push('/home')
                     toast.success('Connecté')
                 }else{
                     toast.remove()
@@ -240,7 +240,7 @@ export default function Signin () {
 
     useEffect(() => {
         if(cookies.user){
-            router.push('/')
+            router.push('/home')
         }
     }, [cookies.user, router])
     return(

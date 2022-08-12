@@ -133,7 +133,7 @@ function AddPost({festival}) {
     
         if(res.ok){
             setLoading(false)
-            router.push('/')
+            router.push('/home')
             toast.success('Post créé avec succès')
             }else{
                 setLoading(false)
